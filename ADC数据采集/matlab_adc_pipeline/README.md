@@ -22,13 +22,17 @@ ADC text files to range, velocity, CA-CFAR and teaching-level angle results.
 
 ## Run
 
-1. Open `run_ctsai_a100_demo.m` in MATLAB.
-2. Set `profileName` to `near` or `far`.
-3. Click **Run**.
+1. Add this directory to the MATLAB path or make it the current directory.
+2. Run both public profiles:
+
+```matlab
+run_ctsai_a100_demo('near');
+run_ctsai_a100_demo('far');
+```
 
 The script resolves every path relative to its own location, so MATLAB's
 working directory does not need to be changed. Generated files are placed in
-`results/`:
+`results/near/` and `results/far/`:
 
 - `01_range_spectrum.png`
 - `02_range_doppler_map.png`
@@ -58,3 +62,4 @@ capture.
   phase calibration, velocity ambiguity resolution or product firmware logic.
 
 See `../../docs/CTSAI-A100_MATLAB_ADC_processing.md` for algorithm details.
+Independent NumPy reference results are documented under `validation/`.

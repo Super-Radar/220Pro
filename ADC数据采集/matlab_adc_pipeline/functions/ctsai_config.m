@@ -52,7 +52,7 @@ repoRoot = fileparts(fileparts(projectDir));
 dataDir = fullfile(repoRoot, 'ADC数据采集', '示例adc数据和结果');
 cfg.dataFiles = cellfun(@(s) fullfile(dataDir, [prefix s]), ...
     suffixes, 'UniformOutput', false);
-cfg.resultsDir = fullfile(projectDir, 'results');
+cfg.resultsDir = fullfile(projectDir, 'results', cfg.name);
 
 % Conservative educational defaults; tune for a particular scene.
 cfg.cfar.training = [8 6];      % [range Doppler] cells on each side

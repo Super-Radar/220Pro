@@ -79,8 +79,9 @@ structure makes parameter changes and regression comparisons easier.
 
 ## Reproduction and extension
 
-Run `ADC数据采集/matlab_adc_pipeline/run_ctsai_a100_demo.m`. Change only the
-profile selector for the second public capture. Useful extensions include
+Call `run_ctsai_a100_demo('near')` and `run_ctsai_a100_demo('far')` from the
+`ADC数据采集/matlab_adc_pipeline/` directory. Each profile writes to a separate
+results subdirectory. Useful extensions include
 calibrated antenna geometry, phase calibration, OS-CFAR, multi-frame tracking
 and unit tests built from a small
 redistributable fixture.
@@ -91,3 +92,11 @@ Results depend on the capture scene, waveform configuration, mounting,
 calibration and processing parameters. This reference deliberately avoids
 claims about maximum detection range, accuracy, false-alarm rate or field
 performance.
+
+## Independent reference validation
+
+The `ADC数据采集/matlab_adc_pipeline/validation/` directory contains a NumPy
+implementation of the same public-data unpacking and signal-processing equations.
+It is intended to catch data-shape, axis and finite-value regressions when MATLAB
+is unavailable. Its output is independent reference evidence and is not described
+as native MATLAB execution.

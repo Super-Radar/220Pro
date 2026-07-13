@@ -1,0 +1,5 @@
+profile=near
+adc_shape=(2048, 128, 4)
+rd_shape=(1024, 128, 4)
+finite=True
+detections=32

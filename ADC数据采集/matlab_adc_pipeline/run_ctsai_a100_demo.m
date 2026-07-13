@@ -1,11 +1,16 @@
-%% CTSAI-A100 reproducible ADC signal-processing demo
-% Run this file from any working directory. Results are written to results/.
-clear; clc; close all;
+function detections = run_ctsai_a100_demo(profileName)
+%RUN_CTSAI_A100_DEMO Reproducible ADC signal-processing entry point.
+%   run_ctsai_a100_demo() processes the near profile.
+%   run_ctsai_a100_demo('far') processes the far profile.
+
+if nargin < 1
+    profileName = 'near';
+end
+clc; close all;
 
 projectDir = fileparts(mfilename('fullpath'));
 addpath(fullfile(projectDir, 'functions'));
 
-profileName = 'near';       % 'near' or 'far'
 maxDetections = 32;
 cfg = ctsai_config(profileName, projectDir);
 
@@ -34,3 +39,4 @@ fprintf('\nDetected %d targets (limited to %d strongest).\n', ...
     height(detections), maxDetections);
 disp(detections);
 fprintf('Results: %s\n', cfg.resultsDir);
+end
