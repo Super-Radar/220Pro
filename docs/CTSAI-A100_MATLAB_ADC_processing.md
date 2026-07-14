@@ -77,14 +77,12 @@ CSV columns are range in metres, radial velocity in metres per second, estimated
 angle in degrees and integrated power in dB. Saving the full intermediate MAT
 structure makes parameter changes and regression comparisons easier.
 
-## Reproduction and extension
+## Reproduction
 
 Call `run_ctsai_a100_demo('near')` and `run_ctsai_a100_demo('far')` from the
 `ADC数据采集/matlab_adc_pipeline/` directory. Each profile writes to a separate
-results subdirectory. Useful extensions include
-calibrated antenna geometry, phase calibration, OS-CFAR, multi-frame tracking
-and unit tests built from a small
-redistributable fixture.
+results subdirectory containing figures, a detection table and the saved
+processing workspace.
 
 ## Boundaries
 
