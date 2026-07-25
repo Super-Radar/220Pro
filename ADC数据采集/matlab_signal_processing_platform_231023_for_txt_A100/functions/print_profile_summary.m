@@ -1,0 +1,13 @@
+function print_profile_summary(cfg)
+%PRINT_PROFILE_SUMMARY Print key waveform and physical parameters.
+fprintf('Configuration: %s\n', cfg.source_file);
+fprintf('  Carrier: %.3f GHz, bandwidth: %.1f MHz\n', ...
+    cfg.fmcw_startfreq, cfg.fmcw_bandwidth);
+fprintf('  Raw chirps: %d, virtual TX groups: %d, RX: %d\n', ...
+    cfg.nchirp, cfg.nvirtual_chirp, cfg.num_rx);
+fprintf('  Range FFT: %d, Doppler FFT: %d\n', cfg.rng_nfft, cfg.vel_nfft);
+fprintf('  Range bin: %.4f m, max plotted range: %.2f m\n', ...
+    cfg.range_resolution_m, cfg.max_range_m);
+fprintf('  Velocity bin: %.4f m/s, unambiguous limit: +/-%.2f m/s\n', ...
+    cfg.velocity_resolution_mps, cfg.max_unambiguous_velocity_mps);
+end
