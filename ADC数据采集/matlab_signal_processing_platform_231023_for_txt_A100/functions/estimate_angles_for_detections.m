@@ -60,8 +60,13 @@ for iDetection = 1:height(detections)
         diagnostics.dml_spectrum = dmlResult.spectrum;
         diagnostics.music_spectrum = musicResult.spectrum;
         diagnostics.omp_spectrum = ompResult.spectrum;
-        diagnostics.range_m = detections.Range_m(iDetection);
-        diagnostics.velocity_mps = detections.Velocity_mps(iDetection);
+        if ismember('RangeRefined_m', detections.Properties.VariableNames)
+            diagnostics.range_m = detections.RangeRefined_m(iDetection);
+            diagnostics.velocity_mps = detections.VelocityRefined_mps(iDetection);
+        else
+            diagnostics.range_m = detections.Range_m(iDetection);
+            diagnostics.velocity_mps = detections.Velocity_mps(iDetection);
+        end
     end
 end
 

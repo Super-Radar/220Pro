@@ -46,8 +46,10 @@ main.m
   ├─ load_adc_dataset / unpack_uint32_adc
   ├─ organize_virtual_array
   ├─ range_fft
+  ├─ suppress_clutter
   ├─ doppler_fft
-  ├─ cfar_2d / extract_detections
+  ├─ cfar_2d / vi_cfar_map / extract_detections
+  ├─ refine_detections_subbin
   ├─ estimate_angles_for_detections
   └─ plot_* / writetable / save
 ```
@@ -125,7 +127,26 @@ fb = 2 × slope × R / c
 5. 仅保留正频率半谱；
 6. 对 chirp 和通道做非相干积累得到距离谱。
 
-## 7. Doppler FFT 原理
+## 7. 杂波抑制
+
+Range FFT 后、Doppler FFT 前增加独立杂波处理阶段，输入输出均为：
+
+```text
+rangeCube(range, slow_time_chirp, channel)
+```
+
+支持以下模式：
+
+- `NONE`：不抑制，用于基线；
+- `MEAN`：逐距离和通道去除慢时间均值；
+- `MTI2`：二脉冲抵消；
+- `MTI3`：三脉冲抵消；
+- `SVD`：将 `range × channel` 合并为观测维，删除慢时间矩阵的前若干低秩分量；
+- `SVD_MEAN`、`SVD_MTI2`：组合处理。
+
+默认使用 `SVD`、删除 1 个奇异分量。`clutter_suppression_comparison.png` 对比处理前后的 Range-Doppler Map，`processing_result.mat` 保存奇异值、删除秩、删除能量比例和零多普勒抑制度。秩数过高可能同时删除慢速目标。
+
+## 8. Doppler FFT 原理
 
 同一距离单元随 chirp 的相位变化包含径向速度。慢时间 FFT 后，速度栅格为：
 
@@ -135,9 +156,9 @@ fb = 2 × slope × R / c
 
 工程对 Doppler 维加窗、FFT，再使用 `fftshift`，因此速度轴包含负速度和正速度。正负号取决于雷达的相位和坐标约定，应通过已知运动方向标定。
 
-## 8. CFAR 检测
+## 9. CFAR 检测
 
-### 8.1 CA-CFAR
+### 9.1 CA-CFAR
 
 CA-CFAR 对 CUT 周围训练单元取均值：
 
@@ -149,11 +170,27 @@ alpha = N × (Pfa^(-1/N) - 1)
 
 默认训练单元为 `[3,6]`、保护单元为 `[1,2]`，主要是为了让随附示例中靠近雷达的目标也能进入有效 CFAR 区域。
 
-### 8.2 OS-CFAR
+### 9.2 OS-CFAR
 
 OS-CFAR 对训练样本排序并选择第 `k` 个次序统计量，适合训练窗内含有干扰目标的情况。工程通过指数噪声假设下的 Pfa 方程数值求解阈值倍率。OS-CFAR 逐 CUT 排序，运行速度明显慢于默认 CA-CFAR。
 
-### 8.3 检测点整理
+
+### 9.3 GOCA-CFAR 与 SOCA-CFAR
+
+训练环被划分为四个互不重叠扇区。GOCA 取扇区均值最大值，适合杂波边缘的保守检测；SOCA 取最小值，对弱目标更灵敏但更容易产生边缘虚警。
+
+### 9.4 二维 VI-CFAR
+
+VI-CFAR 为每个扇区计算 `variance/mean^2` 和扇区最大/最小均值比。工程按局部均匀性自动选择：
+
+- `CA`：训练环整体均匀；
+- `GOCA`：出现明显杂波边缘；
+- `VI_SELECTED`：只积累未被目标或干扰污染的均匀扇区；
+- `GOCA_FALLBACK`：没有可信扇区时保守回退。
+
+`cfar_diagnostics.png` 展示变异指数和分支图，`detections.csv` 的 `CFARMethod` 保存每个检测点实际使用的分支。
+
+### 9.5 检测点整理
 
 CFAR 掩码还会经过：
 
@@ -163,15 +200,28 @@ CFAR 掩码还会经过：
 - 距离/速度最小间隔抑制；
 - 最低 SNR 门限、按 SNR 排序和数量限制。
 
-## 9. 角度估计
+
+## 10. 亚栅格距离与速度估计
+
+整数 FFT 峰值附近提取 3×3 对数功率邻域，拟合带交叉项的二维二次曲面：
+
+```text
+z = aΔr² + bΔd² + cΔrΔd + dΔr + eΔd + f
+```
+
+利用 Hessian 和梯度计算峰值小数偏移。仅当 Hessian 为负定、条件数合理且偏移位于 ±0.5 bin 内时接受二维解，否则回退到两个方向的一维抛物线插值。
+
+输出保留粗估计 `Range_m`、`Velocity_mps`，并新增 `RangeRefined_m`、`VelocityRefined_mps`、偏移、拟合 R² 和有效性标志。亚栅格估计提高的是离散峰值位置估计精度，并不等于突破雷达物理分辨率。
+
+## 11. 角度估计
 
 阵列导向矢量使用配置中的 `ant_pos`（以波长为单位）和 `ant_comps` 相位标定。
 
-### 9.1 Angle FFT
+### 11.1 Angle FFT
 
 将非均匀阵列采样映射到 0.5 波长栅格，缺失阵元补零后做空间 FFT。该方法快速，但对非均匀阵列、栅格映射和旁瓣敏感。
 
-### 9.2 DML
+### 11.2 DML
 
 单源 DML 在角度网格上拟合：
 
@@ -181,47 +231,30 @@ x ≈ a(theta) × s
 
 选择残差最小的角度。单目标、单快拍条件下，其峰值与常规波束形成接近。
 
-### 9.3 MUSIC
+### 11.3 MUSIC
 
 MUSIC 使用检测点周围小型 Range-Doppler 邻域作为多个快拍，构造协方差矩阵并分解信号/噪声子空间。当前默认信号数为 1，并使用对角加载增强数值稳定性。
 
-### 9.4 OMP
+### 11.4 OMP
 
 OMP 把角度导向矢量组成字典，逐次选择与残差相关性最大的原子。默认只恢复 1 个角度；可提高 `omp_max_sources`，但四通道条件下不宜估计过多源。
 
-## 10. 输出解释
+## 12. 输出解释
 
 `detections.csv` 包含：
 
-- `Range_m`：目标距离；
-- `Velocity_mps`：带符号径向速度；
-- `Power_dB`、`Noise_dB`、`SNR_dB`；
+- `Range_m`、`Velocity_mps`：整数 FFT 栅格的粗估计；
+- `RangeRefined_m`、`VelocityRefined_mps`：二维亚栅格精修结果；
+- `RangeOffset_bin`、`DopplerOffset_bin`：小数栅格偏移；
+- `Power_dB`、`Noise_dB`、`Threshold_dB`、`SNR_dB`；
+- `CFARMethod`、`VariabilityIndex`、`SectorMeanRatio`；
 - `AngleFFT_deg`、`DML_deg`、`MUSIC_deg`、`OMP_deg`；
 - `SelectedAngle_deg`：配置指定的最终角度。
 
 点云坐标使用：
 
 ```text
-x = range × sin(angle)
-y = range × cos(angle)
-z = radial velocity
+x = refined_range × sin(angle)
+y = refined_range × cos(angle)
+z = refined_radial_velocity
 ```
-
-## 11. 当前限制
-
-1. 角度估计只有 4 个接收通道，阵列非均匀且相位标定可能随硬件变化，分辨率和歧义必须实测验证。
-2. 当前 DML 是单源网格搜索；未实现完整多目标联合 DML。
-3. MUSIC 快拍取自邻近 RD 单元，强多目标或扩展目标会违反单源假设。
-4. 未包含 BPM 解码、相位扰码、频率跳变、抗干扰、速度解模糊和目标跟踪。
-5. CFAR 参数是示例默认值，不是任何场景下的产品参数。
-6. 速度正负方向、天线坐标和相位补偿符号需用已知目标完成系统级标定。
-
-## 12. 后续扩展
-
-- 增加 profile 1/2/3 的公开 ADC 数据与回归测试；
-- 支持多帧输入、帧间积累和跟踪；
-- 增加二维/三维阵列的方位角与俯仰角联合估计；
-- 增加 Capon、ESPRIT、二维 MUSIC 和多源 DML；
-- 增加恒虚警参数自动化评估和检测性能统计；
-- 加入真实标定文件、通道幅相均衡和近场波束模型；
-- 增加 MATLAB Unit Test 和 CI 自动运行。
