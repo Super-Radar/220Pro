@@ -1,0 +1,3 @@
+range_m,doppler_bin,velocity_mps,angle_deg,power_db,kinematics_valid,processing_status
+6.294470553710937,32,,,127.62841733000144,False,raw_ddma_not_decoded
+240.76349867944333,35,,,86.46600734729552,False,raw_ddma_not_decoded
