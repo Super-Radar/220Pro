@@ -1,8 +1,9 @@
-"""Independent NumPy reference validation for the CTSAI-A100 MATLAB demo."""
+"""Independent reference validation for guarded CTSAI-A100 processing."""
 
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 import numpy as np
@@ -10,18 +11,42 @@ from PIL import Image, ImageDraw
 
 C = 299_792_458.0
 CANVAS = (1100, 650)
-
-PROFILES = {
-    "near": dict(marker="f1", bandwidth=750e6, ramp=104.65e-6,
-                 period=108.5e-6, chirps=128, packed=1024, nfft=2048),
-    "far": dict(marker="f0", bandwidth=300e6, ramp=43e-6,
-                period=48e-6, chirps=256, packed=512, nfft=1024),
+PROFILE_FILES = {
+    "near": ("f1", "sensor_config_init1.hxx"),
+    "far": ("f0", "sensor_config_init0.hxx"),
 }
 
 
-def load_adc(files: list[Path], packed: int, chirps: int) -> np.ndarray:
+def parse_hxx(path: Path, marker: str) -> dict:
+    text = path.read_text(encoding="utf-8")
+
+    def scalar(name: str) -> float:
+        match = re.search(rf"\.{name}\s*=\s*([-+0-9.eE]+)\s*,", text)
+        if not match:
+            raise ValueError(f"{path.name}: missing {name}")
+        return float(match.group(1))
+
+    tx_match = re.search(r"\.tx_groups\s*=\s*\{([^}]*)\}", text)
+    tx_groups = [int(x, 16) for x in re.findall(r"0x([0-9a-fA-F]+)", tx_match.group(1))]
+    return {
+        "marker": marker,
+        "config": path,
+        "fc": scalar("fmcw_startfreq") * 1e9,
+        "bandwidth": scalar("fmcw_bandwidth") * 1e6,
+        "ramp": scalar("fmcw_chirp_rampup") * 1e-6,
+        "period": scalar("fmcw_chirp_period") * 1e-6,
+        "chirps": int(scalar("nchirp")),
+        "sample_rate": scalar("adc_freq") * 1e6,
+        "nfft": int(scalar("rng_nfft")),
+        "doppler_nfft": int(scalar("vel_nfft")),
+        "tx_groups": tx_groups,
+    }
+
+
+def load_adc(files: list[Path], cfg: dict) -> np.ndarray:
+    packed = cfg["nfft"] // 2
+    expected = packed * cfg["chirps"]
     channels = []
-    expected = packed * chirps
     for path in files:
         values = np.loadtxt(path, delimiter=",").reshape(-1)
         values = values[np.isfinite(values)]
@@ -35,7 +60,7 @@ def load_adc(files: list[Path], packed: int, chirps: int) -> np.ndarray:
         unpacked = np.empty(expected * 2, dtype=np.float64)
         unpacked[0::2] = high
         unpacked[1::2] = low
-        channels.append(unpacked.reshape((packed * 2, chirps), order="F"))
+        channels.append(unpacked.reshape((cfg["nfft"], cfg["chirps"]), order="F"))
     adc = np.stack(channels, axis=2)
     return adc - adc.mean(axis=0, keepdims=True)
 
@@ -77,7 +102,7 @@ def heatmap_image(values: np.ndarray, title: str, cells=None) -> Image.Image:
     canvas.paste(plot, (70, 70))
     draw = ImageDraw.Draw(canvas)
     draw.text((70, 25), title, fill="black")
-    draw.text((450, 625), "Doppler / velocity bins", fill="black")
+    draw.text((450, 625), "Raw Doppler bins", fill="black")
     draw.text((5, 320), "Range bins", fill="black")
     if cells:
         rows, cols = values.shape
@@ -88,79 +113,76 @@ def heatmap_image(values: np.ndarray, title: str, cells=None) -> Image.Image:
     return canvas
 
 
-def line_image(x: np.ndarray, y: np.ndarray, title: str) -> Image.Image:
+def line_image(y: np.ndarray, title: str) -> Image.Image:
     canvas = Image.new("RGB", CANVAS, "white")
     draw = ImageDraw.Draw(canvas)
     draw.text((70, 25), title, fill="black")
     draw.rectangle((70, 70, 1070, 610), outline="black")
     ymin, ymax = np.percentile(y, (1, 99.5))
-    points = [(70+int(i/(len(x)-1)*1000), 610-int(np.clip((v-ymin)/(ymax-ymin+1e-12),0,1)*540))
+    points = [(70+int(i/(len(y)-1)*1000), 610-int(np.clip((v-ymin)/(ymax-ymin+1e-12),0,1)*540))
               for i, v in enumerate(y)]
     draw.line(points, fill=(20, 80, 180), width=2)
-    draw.text((470, 625), "Range", fill="black")
+    draw.text((470, 625), "Range bins", fill="black")
     return canvas
 
 
-def polar_image(rows: list[tuple], title: str) -> Image.Image:
+def status_image(name: str, count: int) -> Image.Image:
     canvas = Image.new("RGB", CANVAS, "white")
     draw = ImageDraw.Draw(canvas)
-    cx, cy, radius = 550, 340, 270
-    draw.text((70, 25), title, fill="black")
-    for frac in (0.25, 0.5, 0.75, 1.0):
-        rr = int(radius*frac)
-        draw.ellipse((cx-rr, cy-rr, cx+rr, cy+rr), outline=(180,180,180))
-    max_range = max((row[0] for row in rows), default=1.0)
-    for rng, _, angle, _ in rows:
-        rr = radius*rng/max_range
-        theta = np.radians(angle-90)
-        x, y = cx+rr*np.cos(theta), cy+rr*np.sin(theta)
-        draw.ellipse((x-5, y-5, x+5, y+5), fill="red")
+    lines = [
+        f"CTSAI-A100 {name} processing status",
+        "Range and raw Doppler diagnostics completed.",
+        f"Raw CFAR detections exported: {count}",
+        "Physical velocity withheld: DDMA coding/offset metadata unavailable.",
+        "Angle withheld: DDMA separation/channel order/TX calibration unavailable.",
+        "See validation.txt and project documentation.",
+    ]
+    for i, line in enumerate(lines):
+        draw.text((80, 70+i*80), line, fill="black")
     return canvas
 
 
 def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
-    adc = load_adc(files, cfg["packed"], cfg["chirps"])
-    range_fft = np.fft.fft(adc * np.hanning(adc.shape[0])[:, None, None],
+    adc = load_adc(files, cfg)
+    range_fft = np.fft.fft(adc*np.hanning(adc.shape[0])[:, None, None],
                            cfg["nfft"], axis=0)[:cfg["nfft"]//2]
     range_fft -= range_fft.mean(axis=1, keepdims=True)
     rd = np.fft.fftshift(np.fft.fft(
-        range_fft * np.hanning(cfg["chirps"])[None, :, None],
-        cfg["chirps"], axis=1), axes=1)
+        range_fft*np.hanning(cfg["chirps"])[None, :, None],
+        cfg["doppler_nfft"], axis=1), axes=1)
     power = np.mean(np.abs(rd)**2, axis=2)
     power_db = 10*np.log10(power + np.finfo(float).eps)
     slope = cfg["bandwidth"] / cfg["ramp"]
-    range_bin = C*25e6/(2*slope*cfg["nfft"])
-    velocity_bin = (C/76.3e9)/(2*cfg["chirps"]*cfg["period"])
+    range_bin = C*cfg["sample_rate"]/(2*slope*cfg["nfft"])
     ranges = np.arange(power.shape[0])*range_bin
-    velocities = (np.arange(cfg["chirps"])-cfg["chirps"]//2)*velocity_bin
+    doppler_bins = np.arange(cfg["doppler_nfft"])-cfg["doppler_nfft"]//2
     power[(ranges < 0.5) | (ranges > 0.9*ranges[-1])] = 0
     mask = cfar(power)
-    cells = np.argwhere(mask)
-    cells = sorted(cells, key=lambda x: power_db[tuple(x)], reverse=True)[:32]
+    cells = sorted(np.argwhere(mask), key=lambda x: power_db[tuple(x)], reverse=True)[:32]
 
     output.mkdir(parents=True, exist_ok=True)
-    rows = []
-    for r, d in cells:
-        spectrum = np.abs(np.fft.fftshift(np.fft.fft(rd[r, d, :], 128)))
-        spatial = (np.argmax(spectrum)-64)/128
-        angle = np.degrees(np.arcsin(np.clip(spatial/0.5, -1, 1)))
-        rows.append((ranges[r], velocities[d], angle, power_db[r, d]))
+    rows = [(ranges[r], int(doppler_bins[d]), "", "", power_db[r, d], False,
+             "raw_ddma_not_decoded") for r, d in cells]
     with (output/"detections.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(("range_m", "velocity_mps", "angle_deg", "power_db"))
+        writer.writerow(("range_m", "doppler_bin", "velocity_mps", "angle_deg",
+                         "power_db", "kinematics_valid", "processing_status"))
         writer.writerows(rows)
 
-    line_image(ranges, 20*np.log10(np.abs(range_fft[:, 0, 0])+1e-12),
-               f"CTSAI-A100 {name} reference range spectrum").save(output/"01_range_spectrum.png")
-    heatmap_image(power_db, f"CTSAI-A100 {name} reference Range-Doppler map").save(
-        output/"02_range_doppler_map.png")
-    heatmap_image(power_db, f"CTSAI-A100 {name} reference CA-CFAR detections", cells).save(
-        output/"03_cfar_detections.png")
-    polar_image(rows, f"CTSAI-A100 {name} reference angle and range").save(
-        output/"04_angle_range.png")
+    line_image(20*np.log10(np.abs(range_fft[:, 0, 0])+1e-12),
+               f"CTSAI-A100 {name} range spectrum").save(output/"01_range_spectrum.png")
+    heatmap_image(power_db, f"CTSAI-A100 {name} raw Range-Doppler map").save(
+        output/"02_raw_range_doppler_map.png")
+    heatmap_image(power_db, f"CTSAI-A100 {name} raw CA-CFAR detections", cells).save(
+        output/"03_raw_cfar_detections.png")
+    status_image(name, len(rows)).save(output/"04_processing_status.png")
 
-    summary = (f"profile={name}\nadc_shape={adc.shape}\nrd_shape={rd.shape}\n"
-               f"finite={np.isfinite(power_db).all()}\ndetections={len(rows)}\n")
+    tx = ",".join(f"0x{x:04x}" for x in cfg["tx_groups"])
+    summary = (f"profile={name}\nconfig={cfg['config'].name}\ntx_groups={tx}\n"
+               f"adc_shape={adc.shape}\nrd_shape={rd.shape}\n"
+               f"finite={np.isfinite(power_db).all()}\ndetections={len(rows)}\n"
+               "mimo_mode=unresolved_ddma\nmetadata_complete=False\n"
+               "physical_velocity_valid=False\nangle_valid=False\n")
     (output/"validation.txt").write_text(summary, encoding="utf-8")
     print(summary, end="")
 
@@ -169,9 +191,13 @@ def main() -> None:
     validation_dir = Path(__file__).resolve().parent
     repo = validation_dir.parents[2]
     data_dir = repo/"ADC数据采集"/"示例adc数据和结果"
+    config_dir = (repo/"ADC数据采集"/
+                  "matlab_signal_processing_platform_231023_for_txt_A100"/
+                  "cfg"/"CTASI-A100配置")
     all_files = list(data_dir.glob("*.txt"))
-    for name, cfg in PROFILES.items():
-        files = sorted(p for p in all_files if f"_{cfg['marker']}_" in p.name)
+    for name, (marker, config_name) in PROFILE_FILES.items():
+        cfg = parse_hxx(config_dir/config_name, marker)
+        files = sorted(p for p in all_files if f"_{marker}_" in p.name)
         if len(files) != 4:
             raise FileNotFoundError(f"{name}: expected four files, found {len(files)}")
         save_results(name, cfg, files, validation_dir/"results"/name)

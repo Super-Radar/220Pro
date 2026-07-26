@@ -1,18 +1,22 @@
 # CTSAI-A100 MATLAB ADC signal-processing example
 
 This example provides one reproducible entry point from the public CTSAI-A100
-ADC text files to range, velocity, CA-CFAR and teaching-level angle results.
+ADC text files to range and raw-Doppler diagnostic results. It loads the
+repository HXX configuration and prevents unsupported physical velocity or angle
+claims when DDMA metadata is incomplete.
 
 ## Features
 
 - reads all four public RX files and validates their lengths;
 - unpacks two signed 16-bit ADC samples from every stored 32-bit word;
-- supports the public near- and far-range profiles;
+- loads the public near- and far-range HXX profile parameters;
 - performs DC removal, Hann windowing, Range FFT and Doppler FFT;
 - integrates the four RX channels noncoherently;
 - detects targets with a toolbox-independent 2-D CA-CFAR implementation;
-- estimates a teaching-level arrival angle with a four-RX spatial FFT;
-- exports PNG figures, a CSV target table and a MAT result file.
+- validates RX-file count and payload dimensions against the selected profile;
+- exports raw Doppler bins while DDMA phase/offset metadata is unavailable;
+- keeps physical velocity and angle as `NaN` instead of reporting undecoded data;
+- exports PNG figures, a CSV target table, configuration report and MAT file.
 
 ## Requirements
 
@@ -22,41 +26,42 @@ ADC text files to range, velocity, CA-CFAR and teaching-level angle results.
 
 ## Run
 
-1. Add this directory to the MATLAB path or make it the current directory.
-2. Run both public profiles:
+Add this directory to the MATLAB path or make it the current directory, then run:
 
 ```matlab
 run_ctsai_a100_demo('near');
 run_ctsai_a100_demo('far');
 ```
 
-The script resolves every path relative to its own location, so MATLAB's
-working directory does not need to be changed. Generated files are placed in
-`results/near/` and `results/far/`:
+Results are written to `results/near/` and `results/far/`:
 
 - `01_range_spectrum.png`
-- `02_range_doppler_map.png`
-- `03_cfar_detections.png`
-- `04_angle_range.png`
+- `02_raw_range_doppler_map.png`
+- `03_raw_cfar_detections.png`
+- `04_processing_status.png`
 - `detections.csv`
+- `configuration_report.txt`
 - `processing_result.mat`
 
-## Parameter tuning
+## Configuration consistency and DDMA boundary
 
-CFAR parameters are in `functions/ctsai_config.m`. The defaults are intended
-for demonstrating the processing chain rather than claiming product-level
-detection performance. For a real scene, tune training cells, guard cells,
-false-alarm probability and valid range while keeping an untouched evaluation
-capture.
+The public HXX files expose TDM-style `tx_groups`, while review feedback
+identified DDMA structure in the public captures. Correct DDMA separation and
+physical velocity/angle recovery require TX masks, per-chirp phase coding,
+Doppler-bin offsets, initial phase, DDMA chirp timing, ambiguity-resolution
+rules, virtual-channel ordering and TX/DDMA calibration status.
+
+Those fields are not present in the public repository. Consequently, the second
+FFT axis is currently exported as raw Doppler bins. CA-CFAR is applied as a
+spectrum diagnostic; `velocity_mps`, `angle_deg` and `kinematics_valid` clearly
+show that calibrated kinematics were not produced.
 
 ## Known limitations
 
 - The public capture is processed as one frame; multi-frame tracking is not
   implemented.
-- Angle estimation assumes four uniformly spaced RX elements at half a
-  wavelength. The repository does not currently publish the full calibrated
-  virtual-array geometry, so angle output is an educational estimate, not a
-  calibrated CTSAI-A100 product measurement.
+- DDMA decoding and calibrated virtual-array angle output are disabled until
+  the required metadata is publicly available.
 - Static-clutter suppression uses slow-time mean subtraction.
 - This example does not implement proprietary interference cancellation,
   phase calibration, velocity ambiguity resolution or product firmware logic.

@@ -1,11 +1,12 @@
 function detections = build_detection_table(mask, powerDb, rangeAxis, ...
-    velocityAxis, rdCube, cfg, maxDetections)
-%BUILD_DETECTION_TABLE Convert CFAR cells into range/velocity/angle rows.
+    dopplerBinAxis, nominalVelocityAxis, rdCube, cfg, maxDetections)
+%BUILD_DETECTION_TABLE Export valid measurements without inventing DDMA data.
 
 [r, d] = find(mask);
 if isempty(r)
-    detections = table([], [], [], [], ...
-        'VariableNames', {'range_m','velocity_mps','angle_deg','power_db'});
+    detections = table([], [], [], [], [], false(0,1), cell(0,1), ...
+        'VariableNames', {'range_m','doppler_bin','velocity_mps', ...
+        'angle_deg','power_db','kinematics_valid','processing_status'});
     return;
 end
 
@@ -14,16 +15,29 @@ linear = sub2ind(size(powerDb), r, d);
 order = order(1:min(maxDetections, numel(order)));
 r = r(order); d = d(order); linear = linear(order);
 
-angles = zeros(numel(r),1);
-for k = 1:numel(r)
-    phaseSnapshot = squeeze(rdCube(r(k), d(k), :));
-    angleSpectrum = abs(fftshift(fft(phaseSnapshot, cfg.angleNfft)));
-    [~, peak] = max(angleSpectrum);
-    spatial = ((peak-1) - cfg.angleNfft/2) / cfg.angleNfft;
-    sinTheta = spatial / cfg.rxSpacingLambda;
-    angles(k) = asind(max(-1, min(1, sinTheta)));
+dopplerBins = dopplerBinAxis(d).';
+velocity = nan(numel(r), 1);
+angles = nan(numel(r), 1);
+status = repmat({'raw_ddma_not_decoded'}, numel(r), 1);
+valid = false(numel(r), 1);
+
+if cfg.mimo.velocityValid
+    velocity = nominalVelocityAxis(d).';
+end
+if cfg.mimo.angleValid
+    for k = 1:numel(r)
+        snapshot = squeeze(rdCube(r(k), d(k), :));
+        angles(k) = estimate_angle_fft(snapshot, ...
+            cfg.mimo.rxSpacingLambda, cfg.angleNfft);
+    end
+end
+if cfg.mimo.velocityValid && cfg.mimo.angleValid
+    valid(:) = true;
+    status(:) = {'decoded_and_calibrated'};
 end
 
-detections = table(rangeAxis(r), velocityAxis(d).', angles, powerDb(linear), ...
-    'VariableNames', {'range_m','velocity_mps','angle_deg','power_db'});
+detections = table(rangeAxis(r), dopplerBins, velocity, angles, ...
+    powerDb(linear), valid, status, ...
+    'VariableNames', {'range_m','doppler_bin','velocity_mps', ...
+    'angle_deg','power_db','kinematics_valid','processing_status'});
 end

@@ -1,5 +1,11 @@
 profile=near
+config=sensor_config_init1.hxx
+tx_groups=0x0001,0x0000,0x0000,0x0000
 adc_shape=(2048, 128, 4)
 rd_shape=(1024, 128, 4)
 finite=True
 detections=32
+mimo_mode=unresolved_ddma
+metadata_complete=False
+physical_velocity_valid=False
+angle_valid=False

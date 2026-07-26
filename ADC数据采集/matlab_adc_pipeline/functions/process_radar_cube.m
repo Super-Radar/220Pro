@@ -18,7 +18,7 @@ rdPowerDb = 10 * log10(rdPower + eps);
 
 rangeAxis = (0:size(rangeFft,1)-1).' * cfg.rangeBinM;
 dopplerBins = (-cfg.dopplerNfft/2:cfg.dopplerNfft/2-1);
-velocityAxis = dopplerBins * cfg.velocityResolutionMps;
+nominalTdmVelocityAxis = dopplerBins * cfg.nominalTdmVelocityResolutionMps;
 
 valid = rangeAxis >= cfg.cfar.minRangeM & rangeAxis <= cfg.cfar.maxRangeM;
 rdPower(~valid,:) = 0;
@@ -30,7 +30,8 @@ out.rdCube = rdCube;
 out.rdPower = rdPower;
 out.rdPowerDb = rdPowerDb;
 out.rangeAxis = rangeAxis;
-out.velocityAxis = velocityAxis;
+out.dopplerBinAxis = dopplerBins;
+out.nominalTdmVelocityAxis = nominalTdmVelocityAxis;
 end
 
 function w = local_hann(n)

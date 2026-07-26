@@ -1,13 +1,12 @@
 # Independent numerical validation
 
-`run_reference_validation.py` mirrors the documented unpacking, Range FFT,
-Doppler FFT, four-RX integration, 2-D CA-CFAR and spatial FFT equations with
-NumPy. It processes both public profiles and writes deterministic reference
-figures and detection tables under `results/near/` and `results/far/`.
+`run_reference_validation.py` loads the repository HXX files and mirrors the
+guarded MATLAB ADC unpacking, Range FFT, raw Doppler FFT, four-RX integration
+and CA-CFAR equations with NumPy.
 
-This is deliberately labelled as an independent reference check. It validates
-data dimensions, axes, finite numerical output and end-to-end processing, but
-does not claim that MATLAB itself was executed.
+The validation deliberately does not turn unresolved DDMA bins into physical
+velocity or angle. Generated CSV files retain raw Doppler bins and leave
+`velocity_mps` and `angle_deg` empty with `kinematics_valid=False`.
 
 Run from the repository root:
 
@@ -23,7 +22,7 @@ Validated environment for the committed results:
 
 Expected cube dimensions:
 
-| Profile | ADC cube | Range-Doppler cube |
-|---|---:|---:|
-| near | 2048 x 128 x 4 | 1024 x 128 x 4 |
-| far | 1024 x 256 x 4 | 512 x 256 x 4 |
+| Profile | HXX source | ADC cube | Raw Range-Doppler cube |
+|---|---|---:|---:|
+| near | `sensor_config_init1.hxx` | 2048 x 128 x 4 | 1024 x 128 x 4 |
+| far | `sensor_config_init0.hxx` | 1024 x 256 x 4 | 512 x 256 x 4 |
