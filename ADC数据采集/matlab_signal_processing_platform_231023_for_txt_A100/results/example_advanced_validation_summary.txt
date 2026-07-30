@@ -1,9 +1,0 @@
-Advanced independent numerical validation
-ADC shape: (1024, 256, 4)
-SVD rank removed: 1
-SVD first/second singular ratio: 1.927298
-SVD removed energy ratio: 0.608855
-Zero-Doppler suppression: 5.367 dB
-VI-CFAR detections after post-processing: 16
-Range bin: 0.524539213 m
-Velocity bin: 0.159876623 m/s

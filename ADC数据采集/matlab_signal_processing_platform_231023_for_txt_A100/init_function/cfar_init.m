@@ -11,24 +11,19 @@ function [CfarPra] = cfar_init(Cfg)
 %   Description  : add cfar_recwin_decimate
 %------------------------------------------------------------------------------
 
-%·ÖÇø²ÎÊý
+%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 CfarPra.regionR  = Cfg.cfar_region_sep_rng + 1;%[37, 121, 350];
 CfarPra.regionV  = (reshape(Cfg.cfar_region_sep_vel + 1, 2, 4)).';
 
 CfarPra.cfar_recwin_msk     = zeros(11,11,8);
 mskTmp1      = dec2bin(Cfg.cfar_recwin_msk,11);
-mskTmp2      = zeros(88,11);
-for m = 1:88
-    for n = 1:11
-        mskTmp2(m,n)    = str2num(mskTmp1(m,n));
-    end
-end
+mskTmp2      = double(mskTmp1) - double('0');
 for m = 1:8
     CfarPra.cfar_recwin_msk(:,:,m)  = mskTmp2((m-1)*11+1:m*11,:);
 end
 % CfarPra.cfar_recwin_msk = dec2bin(Cfg.cfar_recwin_msk,11);
 
-%CFAR²ÎÊý
+%CFARï¿½ï¿½ï¿½ï¿½
 if(isempty(Cfg.cfar_region_algo_type))
     Cfg.cfar_region_algo_type=0;
 end
@@ -51,8 +46,13 @@ if(Cfg.cfar_combine_dirs)
     CfarPra.mimo_cfar_steer_vector=zeros(Cfg.nvirtual_array,Cfg.cfar_combine_dirs);
     for beamNum=1:Cfg.cfar_combine_dirs
         for k=1:Cfg.nvirtual_array
-            CfarPra.mimo_cfar_steer_vector(k,beamNum)=exp(-1i*2*pi*Cfg.ant_pos(2*k-1)*sind(Cfg.cfar_combine_thetas(beamNum))*cosd(Cfg.cfar_combine_phis(beamNum)))...
-                *exp(-1i*2*pi*Cfg.ant_pos(2*k)*sind(Cfg.cfar_combine_phis(beamNum)))*exp(1i*Cfg.ant_comps(k)/180*pi);
+            pos = Cfg.virtual_array.positions_lambda(k,:);
+            phaseError = Cfg.virtual_array.phase_error_deg(k);
+            CfarPra.mimo_cfar_steer_vector(k,beamNum) = ...
+                exp(-1i*2*pi*pos(1)*sind(Cfg.cfar_combine_thetas(beamNum))* ...
+                cosd(Cfg.cfar_combine_phis(beamNum))) * ...
+                exp(-1i*2*pi*pos(2)*sind(Cfg.cfar_combine_phis(beamNum))) * ...
+                exp(1i*phaseError/180*pi);
         end
     end
 else
@@ -83,16 +83,16 @@ end
 
 function [exp_num_r, exp_num_fd] = choice_cfar_recwin_decimate(cfar_recwin_decimate)
 switch(cfar_recwin_decimate)
-    case 0%²»³éÈ¡
+    case 0%ï¿½ï¿½ï¿½ï¿½È¡
         exp_num_r       = 5;
         exp_num_fd      = 5;
-    case 1%¾àÀë³éÈ¡
+    case 1%ï¿½ï¿½ï¿½ï¿½ï¿½È¡
         exp_num_r       = 10;
         exp_num_fd      = 5;
-    case 2%ËÙ¶È³éÈ¡
+    case 2%ï¿½Ù¶È³ï¿½È¡
         exp_num_r       = 5;
         exp_num_fd      = 10;
-    case 3%ËÙ¶È¾àÀë³éÈ¡
+    case 3%ï¿½Ù¶È¾ï¿½ï¿½ï¿½ï¿½È¡
         exp_num_r       = 10;
         exp_num_fd      = 10;
     otherwise

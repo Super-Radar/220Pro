@@ -1,5 +1,14 @@
 function [positionsLambda, phaseErrorDeg] = get_array_geometry(cfg, numChannels)
-%GET_ARRAY_GEOMETRY Return azimuth positions and calibration phases.
+%GET_ARRAY_GEOMETRY Return mapped virtual-array azimuth positions/phases.
+
+if isfield(cfg, 'virtual_array') && ...
+        isfield(cfg.virtual_array, 'positions_lambda') && ...
+        size(cfg.virtual_array.positions_lambda, 1) == numChannels
+    positionsLambda = cfg.virtual_array.positions_lambda(:, 1).';
+    phaseErrorDeg = cfg.virtual_array.phase_error_deg(:).';
+    return;
+end
+
 if isfield(cfg, 'ant_pos') && size(cfg.ant_pos,1) >= numChannels
     positionsLambda = cfg.ant_pos(1:numChannels, 1).';
 else

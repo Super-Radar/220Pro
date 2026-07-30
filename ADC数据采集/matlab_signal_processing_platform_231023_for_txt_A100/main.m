@@ -1,7 +1,7 @@
 %% CTSAI-A100 MATLAB Signal Processing Example
 % Unified entry point:
-% ADC parsing -> Range FFT -> clutter suppression -> Doppler FFT ->
-% adaptive CFAR -> sub-bin estimation -> DOA -> visualization.
+% ADC parsing -> Range FFT -> MIMO organization/DDMA demodulation ->
+% clutter suppression -> Doppler FFT -> adaptive CFAR -> sub-bin -> DOA.
 clear; clc; close all;
 
 projectRoot = fileparts(mfilename('fullpath'));
@@ -32,22 +32,33 @@ print_profile_summary(radarCfg);
 profileTag = sprintf('Pf%d', opts.profile_id);
 dataFiles = discover_adc_files(fullfile(projectRoot, 'data'), profileTag);
 [adcRxCube, adcMeta] = load_adc_dataset(dataFiles, radarCfg, opts.io);
+fprintf('Raw ADC cube: samples=%d, raw chirps=%d, RX=%d\n', ...
+    size(adcRxCube, 1), size(adcRxCube, 2), size(adcRxCube, 3));
 
-% Raw RX cube: [sample, raw chirp, RX]. Convert to virtual array cube when
-% a TDM-MIMO waveform contains more than one transmit chirp group.
-adcCube = organize_virtual_array(adcRxCube, radarCfg, opts.io.tx_chirp_layout);
-fprintf('ADC cube: samples=%d, slow-time chirps=%d, channels=%d\n', ...
-    size(adcCube, 1), size(adcCube, 2), size(adcCube, 3));
+%% 3. Range FFT, then mode-correct virtual-array construction
+% DDMA phase demodulation must operate on complex Range-FFT data. Doing the
+% virtual-array step before Range FFT would rotate real ADC samples and is
+% therefore not valid for general DDMA waveforms.
+[rangeRxCube, ~] = range_fft(adcRxCube, radarCfg, opts.range_fft);
+rangeCube = organize_virtual_array(rangeRxCube, radarCfg, ...
+    opts.io.tx_chirp_layout);
+rangePower = squeeze(mean(mean(abs(rangeCube).^2, 3), 2));
+fprintf('Range/MIMO cube: range bins=%d, slow-time chirps=%d, channels=%d\n', ...
+    size(rangeCube, 1), size(rangeCube, 2), size(rangeCube, 3));
+if size(rangeCube, 3) ~= radarCfg.nvirtual_array
+    error('Virtual-array channel count does not match derived configuration.');
+end
 
-%% 3. Range FFT and advanced clutter suppression
-[rangeCube, rangePower] = range_fft(adcCube, radarCfg, opts.range_fft);
-% Keep a baseline RD map so the suppression gain can be visualized.
-[~, rdPowerBeforeClutter] = doppler_fft(rangeCube, radarCfg, opts.doppler_fft);
+%% 4. Clutter suppression and Doppler FFT
+[~, rdPowerBeforeClutter] = doppler_fft(rangeCube, radarCfg, ...
+    opts.doppler_fft);
 [rangeCubeProcessed, clutterDiagnostics] = suppress_clutter( ...
     rangeCube, opts.clutter);
-[rdCube, rdPower] = doppler_fft(rangeCubeProcessed, radarCfg, opts.doppler_fft);
+[rdCube, rdPower] = doppler_fft(rangeCubeProcessed, radarCfg, ...
+    opts.doppler_fft);
 zeroDopplerIndex = floor(size(rdPower,2)/2) + 1;
-zeroDopplerBand = max(1,zeroDopplerIndex-1):min(size(rdPower,2),zeroDopplerIndex+1);
+zeroDopplerBand = max(1,zeroDopplerIndex-1): ...
+    min(size(rdPower,2),zeroDopplerIndex+1);
 zeroPowerBeforePatch = rdPowerBeforeClutter(:,zeroDopplerBand);
 zeroPowerAfterPatch = rdPower(:,zeroDopplerBand);
 zeroPowerBefore = mean(zeroPowerBeforePatch(:));
@@ -60,19 +71,19 @@ fprintf(['Clutter suppression: %s, removed rank=%d, total power change=%.2f dB, 
     clutterDiagnostics.total_power_change_db, ...
     clutterDiagnostics.zero_doppler_suppression_db);
 
-%% 4. Adaptive CFAR detection and peak extraction
+%% 5. Adaptive CFAR detection and peak extraction
 cfarResult = cfar_2d(rdPower, opts.cfar);
 detections = extract_detections(cfarResult, radarCfg, opts.detection);
 
-%% 5. Sub-bin range and velocity refinement
+%% 6. Sub-bin range and velocity refinement
 detections = refine_detections_subbin( ...
     detections, rdPower, radarCfg, opts.subbin);
 
-%% 6. Angle estimation: Angle FFT, DML, MUSIC and OMP
+%% 7. Angle estimation: Angle FFT, DML, MUSIC and OMP
 [detections, angleDiagnostics] = estimate_angles_for_detections( ...
     rdCube, detections, radarCfg, opts.angle);
 
-%% 7. Save tabular and MAT outputs
+%% 8. Save tabular and MAT outputs
 detectionCsv = fullfile(resultsDir, 'detections.csv');
 writetable(detections, detectionCsv);
 
@@ -83,8 +94,8 @@ if opts.output.write_mat
         'cfarResult', 'detections', 'angleDiagnostics', '-v7.3');
 end
 
-%% 8. Visualization
-plot_adc_overview(adcCube, opts.figures, resultsDir);
+%% 9. Visualization
+plot_adc_overview(adcRxCube, opts.figures, resultsDir);
 plot_range_spectrum(rangePower, radarCfg, opts.figures, resultsDir);
 plot_clutter_suppression(rdPowerBeforeClutter, rdPower, radarCfg, ...
     clutterDiagnostics, opts.figures, resultsDir);

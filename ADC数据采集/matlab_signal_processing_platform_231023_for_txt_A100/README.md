@@ -49,10 +49,22 @@ ctsaia100_matlab_signal_processing/
 
 切换 profile 时，必须同时提供匹配该 profile 的 ADC 数据。随附 TXT 的头部为 `Rx,1024,256`，与 `init0` 匹配。
 
+
+## MIMO / DDMA 修复说明
+
+本代码严格解码 `tx_groups` 并按物理 TX 选择对应天线坐标。随附 Pf0/Pf2 为 TX3 单发，Pf1/Pf3 为 TX1 单发，均不是 DDMA。若配置明确提供逐 TX DDMA 相位增量或 Doppler offset，处理链会在 Range FFT 后解调；编码不明确的同时发射配置会直接报错，不会猜测。详见 [docs/DDMA_MIMO_REPAIR.md](docs/DDMA_MIMO_REPAIR.md)。
+
+运行配置测试：
+
+```matlab
+addpath(fullfile(pwd, 'tests'));
+run_configuration_tests;
+```
+
 ## 算法
 
 - ADC：32 位无符号字拆成高 16 位、低 16 位两个有符号采样。
-- 数据立方体：`[sample, slow-time chirp, virtual channel]`。
+- 数据立方体：原始 ADC 为 `[sample, raw chirp, RX]`；Range FFT 后再组织为 `[range, slow-time chirp, virtual channel]`。
 - Range FFT：距离维加窗、FFT、保留正频率半谱。
 - Doppler FFT：慢时间加窗、FFT、`fftshift` 得到正负径向速度。
 - 检测：支持二维 CA-CFAR 和 OS-CFAR；默认 CA-CFAR。

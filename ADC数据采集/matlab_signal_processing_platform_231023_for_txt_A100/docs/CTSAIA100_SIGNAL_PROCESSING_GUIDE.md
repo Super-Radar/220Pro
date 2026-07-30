@@ -44,8 +44,8 @@ main.m
   ├─ load_ctsaia100_config
   ├─ derive_radar_parameters
   ├─ load_adc_dataset / unpack_uint32_adc
-  ├─ organize_virtual_array
   ├─ range_fft
+  ├─ organize_virtual_array（TDM分组 / 显式DDMA解调）
   ├─ suppress_clutter
   ├─ doppler_fft
   ├─ cfar_2d / vi_cfar_map / extract_detections
@@ -96,13 +96,11 @@ adcRxCube(sample, raw_chirp, rx)
 adcCube(sample, slow_time_chirp, channel)
 ```
 
-TDM-MIMO 配置下，`organize_virtual_array.m` 按 `block` 或 `interleaved` 方式把 TX 维展开为虚拟通道：
+TDM-MIMO 配置下，Range FFT 后的复数数据由 `organize_virtual_array.m` 按 `block` 或 `interleaved` 方式拆分 chirp group，再按物理 TX×RX 展开虚拟通道。
 
-```text
-virtual_channel = tx_index × rx_count + rx_index
-```
+显式 DDMA 配置下，同一 group 内的多个 TX 会按配置给出的逐 chirp 相位增量解调；若同时发射但配置未给出 DDMA/BPM 编码，程序会停止而不是猜测。
 
-随附 profile 0 为单 TX、4 RX，因此最终角度通道数为 4。
+随附四个 profile 均为单 TX、4 RX。Pf0/Pf2 使用物理 TX3，对应 `ant_pos`/`ant_comps` 第 9–12 项；Pf1/Pf3 使用物理 TX1，对应第 1–4 项。
 
 ## 6. Range FFT 原理
 
@@ -129,10 +127,10 @@ fb = 2 × slope × R / c
 
 ## 7. 杂波抑制
 
-Range FFT 后、Doppler FFT 前增加独立杂波处理阶段，输入输出均为：
+Range FFT 和 MIMO/TDM/DDMA组织后、Doppler FFT 前增加独立杂波处理阶段，输入输出均为：
 
 ```text
-rangeCube(range, slow_time_chirp, channel)
+rangeCube(range, slow_time_chirp, virtual_channel)
 ```
 
 支持以下模式：
@@ -145,6 +143,10 @@ rangeCube(range, slow_time_chirp, channel)
 - `SVD_MEAN`、`SVD_MTI2`：组合处理。
 
 默认使用 `SVD`、删除 1 个奇异分量。`clutter_suppression_comparison.png` 对比处理前后的 Range-Doppler Map，`processing_result.mat` 保存奇异值、删除秩、删除能量比例和零多普勒抑制度。秩数过高可能同时删除慢速目标。
+
+## 7.1 DDMA 严格处理边界
+
+本工程不会把 `tx_phase_value`、相位扰码或 chirp shifting 自动解释成 DDMA。只有 HXX 明确提供 `ddma_phase_increment_deg`（或等价 Doppler offset）时才启用 DDMA解调。当前随附配置没有这些字段，也没有同时启用多个 TX，因此严格模式为 SISO。详见 `DDMA_MIMO_REPAIR.md`。
 
 ## 8. Doppler FFT 原理
 
