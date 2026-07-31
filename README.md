@@ -24,6 +24,15 @@ SuperRadar 是由承泰科技发起并长期支持的开放毫米波感知技术
 
 社区希望通过开放硬件、开放数据、开发工具、技术文档、示例工程与真实场景实践，降低毫米波雷达技术的研究与应用门槛，帮助开发者和研究团队更快进入毫米波感知的底层数据链路，推动更多感知应用共创。
 
+## 快速入口
+
+根据你的需求，可以从以下入口开始：
+
+* **首次使用 A100** → 查看下方 [快速入门](#快速入门)
+* **获取官方工具与开发资源** → 浏览 RadarTools、驱动、ADC 数据采集及 Python / MATLAB 示例
+* **查看开发者项目** → [A100 Community Projects](./community/projects/)
+* **贡献自己的项目** → [项目提交模板](./community/template/) / [贡献指南](./CONTRIBUTING.md)
+* **反馈问题** → [GitHub Issues](https://github.com/Super-Radar/CTSAI-A100/issues)
 
 
 ### 核心能力
