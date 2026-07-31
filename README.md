@@ -107,30 +107,56 @@ SuperRadar 是由承泰科技发起并长期支持的开放毫米波感知技术
 
 
 
+## Community Projects
+
+除了官方提供的驱动、工具、示例和技术文档外，SuperRadar 也欢迎开发者基于 CTSAI-A100 开展自己的算法实验、数据分析和场景应用开发。
+
+社区项目统一收录在：
+
+[`community/projects/`](./community/projects/)
+
+你可以在这里查看其他开发者基于 A100 完成的：
+
+* ADC 信号处理与分析
+* Range FFT / Doppler FFT / 2D FFT
+* MTI、CFAR 等算法实验
+* 点云处理、聚类与目标跟踪
+* MATLAB / Python 开发实践
+* AI 感知与模型验证
+* 机器人、低空及其他场景应用
+
+我们希望这些项目不仅展示最终结果，也能够让其他开发者理解实现过程、复现实验，并在此基础上继续开发。
+
+
 
 ## 如何贡献
 
-SuperRadar 秉承开源理念，我们欢迎所有人的贡献。无论您是想改进文档、修复漏洞还是开发新功能，我们都诚挚邀请您参与塑造社区的未来。
+目前 SuperRadar 主要欢迎开发者贡献 **基于 CTSAI-A100 的独立 Community Project**。
 
-你可以贡献：
+如果你完成了算法实验、数据处理、场景测试或应用开发，可以将完整项目提交至：
 
-* 文档修正和补充
-* 示例代码优化
-* Python / Matlab 数据处理脚本
-* ADC 数据处理方法
-* 点云算法示例
-* 典型场景数据
-* 可视化工具
-* Bug 修复
-* 使用案例和研究笔记
+`community/projects/<project-name>/`
 
-贡献流程：
+提交前请先阅读：
+
+* [A100 Community](./community/)
+* [Community Projects](./community/projects/)
+* [项目提交模板](./community/template/)
+* [贡献指南](./CONTRIBUTING.md)
+
+基本流程：
 
 1. Fork 本仓库
-2. 创建新的分支
-3. 提交修改
-4. 发起 Pull Request
-5. 等待社区 review 与合并
+2. 在自己的 Fork 中创建开发分支
+3. 在 `community/projects/` 下创建自己的项目目录
+4. 提交代码、数据说明、实验结果和项目文档
+5. 发起 Pull Request
+6. 根据 Review 意见完善项目
+7. PR 合并后，项目正式进入 A100 Community Projects
+
+A100 官方维护的 RadarTools、驱动、基础示例和产品技术文档原则上不作为 Community Project 的修改对象。
+
+如发现官方资源存在问题，请优先通过 GitHub Issue 反馈。
 
 
 
