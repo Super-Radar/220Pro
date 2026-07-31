@@ -162,8 +162,7 @@ A100 官方维护的 RadarTools、驱动、基础示例和产品技术文档原�
 
 ## 许可证 License
 
-采用 Apache 2.0 许可证。详情请参阅[LICENSE文件](https://github.com/Super-Radar/CTSAI-A100/blob/main/README.md)。
-
+采用 Apache 2.0 许可证。详情请参阅 [LICENSE](./LICENSE)。
 
 ## 免责声明
 
