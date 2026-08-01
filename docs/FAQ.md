@@ -46,7 +46,7 @@ content_type: 1
 
 * 是否已经点击点云采集按钮。
 * 是否点击 `Stop` 结束采集。
-* `tools/RadarTools_Release/data/` 目录是否存在。
+* `RadarTools/RadarTools_Release/data/` 目录是否存在。
 * 上位机是否具有当前目录写入权限。
 
 ### ADC 采集后没有生成数据？
@@ -64,7 +64,7 @@ content_type: 1
 
 请检查：
 
-* ADC 数据是否已拷贝到 `examples/matlab-adc-processing/data/`。
+* ADC 数据是否已拷贝到 `ADC数据采集/matlab_signal_processing_platform_231023_for_txt_A100/data/`。
 * 是否配置了正确的数据文件路径。
 * 4 个接收通道文件名是否填写正确。
 * 远波 / 近波配置文件是否选择正确。

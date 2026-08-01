@@ -13,13 +13,13 @@ content_type: 1
 Matlab 示例工程位于：
 
 ```text
-examples/matlab-adc-processing/
+ADC数据采集/matlab_signal_processing_platform_231023_for_txt_A100/
 ```
 
 示例工程中包含 CTSAI-A100 ADC 数据处理入口脚本：
 
 ```text
-ct_signal_processing_main_simple_CTSAIA100.m
+ct_signal_processing_main_simple_CTASIA100.m
 ```
 
 ### 选择波形配置文件
@@ -27,7 +27,7 @@ ct_signal_processing_main_simple_CTSAIA100.m
 打开以下文件：
 
 ```text
-examples/matlab-adc-processing/ct_signal_processing_main_simple_CTSAIA100.m
+ADC数据采集/matlab_signal_processing_platform_231023_for_txt_A100/ct_signal_processing_main_simple_CTASIA100.m
 ```
 
 根据采集时使用的波形选择对应配置文件。
@@ -48,7 +48,7 @@ sensor_config_init1.hxx
 
 ```matlab
 cell_cfg_file_path = {
-    '.\cfg\CTSAIA100配置\sensor_config_init0.hxx'
+    '.\cfg\CTASI-A100配置\sensor_config_init0.hxx'
 };
 ```
 
@@ -57,20 +57,20 @@ cell_cfg_file_path = {
 将 RadarTools 采集到的 ADC 数据文件从以下目录：
 
 ```text
-tools/RadarTools_Release/adcData/
+RadarTools/RadarTools_Release/adcData/
 ```
 
 拷贝到 Matlab 示例工程的数据目录：
 
 ```text
-examples/matlab-adc-processing/data/
+ADC数据采集/matlab_signal_processing_platform_231023_for_txt_A100/data/
 ```
 
 若数据包含多个接收通道，请确保所有通道文件均已拷贝完整。
 
 ### 配置数据路径和文件名
 
-在 `ct_signal_processing_main_simple_CTSAIA100.m` 中配置 ADC 数据所在目录：
+在 `ct_signal_processing_main_simple_CTASIA100.m` 中配置 ADC 数据所在目录：
 
 ```matlab
 cell_data_file_path = {
@@ -96,7 +96,7 @@ cell_data_file_name_list = {
 在 Matlab 中运行：
 
 ```matlab
-ct_signal_processing_main_simple_CTSAIA100
+ct_signal_processing_main_simple_CTASIA100
 ```
 
 运行后，可根据示例工程输出查看处理结果。
