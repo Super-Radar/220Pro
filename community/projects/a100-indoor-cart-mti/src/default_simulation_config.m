@@ -6,12 +6,14 @@ cfg.fc_hz = 77e9;
 cfg.bandwidth_hz = 1e9;
 cfg.chirp_duration_s = 60e-6;
 cfg.chirp_repetition_s = 70e-6;
-cfg.sample_rate_hz = 10e6;
 cfg.num_samples = 1024;
 cfg.num_chirps = 256;
+cfg.sample_rate_hz = cfg.num_samples / cfg.chirp_duration_s;
 cfg.noise_snr_db = 24;
 cfg.mti_order = 1;
 cfg.random_seed = 20260802;
+cfg.generate_reference_waveforms = true;
+cfg.waveform_oversample = 2.5;
 
 % Positive velocity is receding; negative velocity is approaching.
 cfg.targets = struct( ...
@@ -20,4 +22,3 @@ cfg.targets = struct( ...
     'amplitude', {1.0, 3.8, 2.7, 1.8}, ...
     'label', {'cart', 'door frame', 'wall', 'far wall'});
 end
-

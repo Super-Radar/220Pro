@@ -1,0 +1,11 @@
+scenario,rx,samples_per_chirp,chirps,packed_words,padding_count,padding_verified_zero,adc_rms,zero_doppler_suppression_db,file
+static_box,0,1024,256,131072,1,1,63.1937111538,52.7034396142,data/adc/adc_test_20260802162041191/run_001_Pf0_Rx0.txt
+static_box,1,1024,256,131072,1,1,75.412713733,52.1975085131,data/adc/adc_test_20260802162041191/run_001_Pf0_Rx1.txt
+static_box,2,1024,256,131072,1,1,78.4020704035,52.5425897696,data/adc/adc_test_20260802162041191/run_001_Pf0_Rx2.txt
+static_box,3,1024,256,131072,1,1,77.6312274984,52.955034092,data/adc/adc_test_20260802162041191/run_001_Pf0_Rx3.txt
+empty_background,0,1024,256,131072,1,1,61.0151508464,51.7552507356,data/adc/adc_empty_background_20260802162429496/run_001_Pf0_Rx0.txt
+empty_background,1,1024,256,131072,1,1,75.0432565688,52.2647245215,data/adc/adc_empty_background_20260802162429496/run_001_Pf0_Rx1.txt
+empty_background,2,1024,256,131072,1,1,74.4791373925,53.198457875,data/adc/adc_empty_background_20260802162429496/run_001_Pf0_Rx2.txt
+empty_background,3,1024,256,131072,1,1,66.5449534898,53.5914969746,data/adc/adc_empty_background_20260802162429496/run_001_Pf0_Rx3.txt
+approaching_box,0,1024,256,131072,1,1,61.8142521593,49.3328708812,data/adc/adc_approaching_box_rx0_20260802163233093/run_001_Pf0_Rx0.txt
+receding_box,0,1024,256,131072,1,1,57.7322711897,51.3802401756,data/adc/adc_receding_box_rx0_retry3_20260802164502658/run_001_Pf0_Rx0.txt

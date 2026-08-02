@@ -1,0 +1,13 @@
+metric,value,unit,source
+simulation_range_resolution,0.149896229,m,teaching_simulation
+simulation_velocity_resolution,0.108633050933,m/s,teaching_simulation
+simulation_cart_range_error,0.00415084,m,teaching_simulation
+simulation_cart_velocity_error,0.0241008471997,m/s,teaching_simulation
+simulation_static_suppression,76.4990522445,dB,teaching_simulation
+measured_adc_approaching_zero_bin_suppression,49.3328708812,dB,real_adc_bin_domain
+measured_adc_receding_zero_bin_suppression,51.3802401756,dB,real_adc_bin_domain
+measured_stationary_person_roi_detection_fraction,0.612781954887,fraction,real_point_output
+measured_stationary_person_median_range,2.79,m,real_point_output
+measured_cart_approach_range_slope,-0.0818084025933,m/s,real_detection_envelope
+measured_cart_recede_range_slope,0.177199556075,m/s,real_detection_envelope
+measured_person_recede_range_slope,0.0700304370962,m/s,real_detection_envelope

@@ -6,8 +6,11 @@ project_root = fileparts(tests_dir);
 addpath(fullfile(project_root, 'src'));
 addpath(tests_dir);
 
-tests = {@() test_environment(project_root), @test_adc_loader};
-names = {'environment', 'ADC loader'};
+tests = {@() test_environment(project_root), @test_adc_loader, ...
+         @() test_upstream_loader(project_root), @test_signal_processing, ...
+         @test_target_parser};
+names = {'environment', 'ADC loader', 'upstream loader repair', ...
+         'signal processing', 'target parser'};
 for idx = 1:numel(tests)
     fprintf('[TEST] %s ... ', names{idx});
     tests{idx}();
@@ -17,4 +20,3 @@ fprintf('%d test groups passed.\n', numel(tests));
 end
 
 run_tests();
-
