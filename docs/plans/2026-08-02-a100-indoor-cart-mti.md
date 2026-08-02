@@ -100,7 +100,7 @@
 
 **Step 2:** Implement tolerant parsing that only accepts rows matching the header and numeric key fields.
 
-**Step 3:** Plot distance/time trends and XY trajectories for static, empty, approaching, and receding scenes; export robust per-scene statistics.
+**Step 3:** Plot distance/time trends and XY trajectories for static, empty, approaching, receding, stationary-person, and short-path person scenes; export robust per-scene statistics.
 
 **Step 4:** Verify approaching/receding interpretations against the parsed distance trend and explicitly flag sparse or missing tracking output.
 
@@ -112,7 +112,7 @@
 - Create: `community/projects/a100-indoor-cart-mti/README.md`
 - Modify: `community/projects/README.md`
 
-**Step 1:** Copy only the four effective ADC datasets and the four scenes' non-empty ASC/RawTarget/TraTarget files into the project.
+**Step 1:** Copy only the four effective ADC datasets and the seven accepted scenes' non-empty ASC/RawTarget/TraTarget files into the project.
 
 **Step 2:** Generate a manifest containing scenario, relative path, byte size, and SHA-256; verify hashes against the acquisition workspace.
 
@@ -134,4 +134,3 @@
 **Step 3:** Check `gh auth status` and local Git author/committer are `yyqdbngt`; commit only intentional files.
 
 **Step 4:** Push `btlqql/issue-8-indoor-cart-mti` to the `yyqdbngt/CTSAI-A100` fork and open a PR to `Super-Radar/CTSAI-A100:main` with `Closes #8` or `Relates to #8` as appropriate.
-
