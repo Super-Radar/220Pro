@@ -9,6 +9,9 @@ env = prepare_environment(project_root);
 fprintf('A100 indoor-cart MTI case study\n');
 fprintf('  Octave/MATLAB: %s\n', env.runtime);
 fprintf('  Project root:  %s\n', project_root);
+manifest = verify_data_manifest(project_root);
+fprintf('  Data manifest: %d files, %d bytes, SHA-256 verified\n', ...
+    manifest.entry_count, manifest.total_bytes);
 
 simulation_metrics = run_simulation(project_root);
 run_parameter_studies(project_root);

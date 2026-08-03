@@ -9,7 +9,8 @@ env = prepare_environment(project_root);
 cfg = default_simulation_config();
 scene = simulate_lfmcw_scene(cfg);
 before = compute_range_doppler(scene.beat, cfg, 0);
-after = compute_range_doppler(scene.beat, cfg, cfg.mti_order);
+display_reference_peak = max(abs(before.rd_complex(:)));
+after = compute_range_doppler(scene.beat, cfg, cfg.mti_order, display_reference_peak);
 
 plot_reference_waveforms(scene, env.figures_dir);
 plot_time_frequency(scene, env.figures_dir);

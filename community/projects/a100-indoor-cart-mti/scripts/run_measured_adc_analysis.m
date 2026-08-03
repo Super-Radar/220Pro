@@ -74,12 +74,15 @@ for channel = 0:3
     field = sprintf('rx%d', channel);
     box = captures.static_box.(field);
     empty = captures.empty_background.(field);
+    common_peak = max([box.range_profile(:); empty.range_profile(:)]);
+    box_db = db_normalize(box.range_profile, -80, common_peak);
+    empty_db = db_normalize(empty.range_profile, -80, common_peak);
     subplot(2, 2, channel + 1);
-    plot(box.range_bin, box.range_profile_db, 'r', 'linewidth', 1.0);
+    plot(box.range_bin, box_db, 'r', 'linewidth', 1.0);
     hold on;
-    plot(empty.range_bin, empty.range_profile_db, 'b', 'linewidth', 1.0);
+    plot(empty.range_bin, empty_db, 'b', 'linewidth', 1.0);
     hold off; grid on; xlim([0 256]); ylim([-80 2]);
-    xlabel('Range bin (not calibrated to metres)'); ylabel('Normalized magnitude (dB)');
+    xlabel('Range bin (not calibrated to metres)'); ylabel('Common-reference magnitude (dB)');
     title(sprintf('Rx%d static box versus empty background', channel));
     legend('static box', 'empty background', 'location', 'southwest');
 end

@@ -18,7 +18,7 @@ scenes = { ...
     'receding_person_short', '21_39_26', 'receding', 'human'};
 
 parsed = struct();
-metrics = cell(size(scenes, 1), 20);
+metrics = cell(size(scenes, 1), 23);
 trajectory_rows = {};
 for idx = 1:size(scenes, 1)
     scene = scenes{idx, 1};
@@ -32,8 +32,10 @@ for idx = 1:size(scenes, 1)
     direction = scenes{idx, 3};
     if strcmp(direction, 'static')
         motion = empty_motion();
+        direction_matches_expected = NaN;
     else
-        motion = extract_motion_track(raw, direction);
+        motion = extract_motion_track(raw);
+        direction_matches_expected = double(strcmp(motion.inferred_direction, direction));
         parsed.(scene).motion = motion;
         for point_idx = 1:motion.point_count
             trajectory_rows(end + 1, :) = {scene, motion.elapsed_s(point_idx), ... %#ok<AGROW>
@@ -57,7 +59,8 @@ for idx = 1:size(scenes, 1)
         motion.median_radial_speed_mps, min_or_nan(raw.range_m), ...
         max_or_nan(raw.range_m), tracked.meta.record_count < 10, ...
         roi.record_count, roi.frame_count, roi.detection_fraction, ...
-        roi.median_range_m, roi.median_angle_deg, roi.median_snr_db};
+        roi.median_range_m, roi.median_angle_deg, roi.median_snr_db, ...
+        direction, motion.inferred_direction, direction_matches_expected};
 end
 
 cart_scenes = scenes(1:4, 1);
@@ -95,7 +98,9 @@ function motion = empty_motion()
 motion = struct('elapsed_s', [], 'range_m', [], 'speed_mps', [], ...
     'angle_deg', [], 'snr_db', [], 'x_m', [], 'y_m', [], 'point_count', 0, ...
     'start_range_m', NaN, 'end_range_m', NaN, 'range_slope_mps', NaN, ...
-    'median_radial_speed_mps', NaN);
+    'median_radial_speed_mps', NaN, 'inferred_direction', 'unknown', ...
+    'inference_score', -Inf, 'approaching_hypothesis_points', 0, ...
+    'receding_hypothesis_points', 0);
 end
 
 function value = min_or_nan(values)
@@ -245,11 +250,13 @@ fprintf(fid, ['scenario,target_type,raw_records,raw_frames,tracked_records,track
               'motion_points,start_range_m,end_range_m,range_slope_mps,' ...
               'median_radial_speed_mps,min_raw_range_m,max_raw_range_m,' ...
               'tracked_output_sparse,roi_records,roi_frames,roi_detection_fraction,' ...
-              'roi_median_range_m,roi_median_angle_deg,roi_median_snr_db\n']);
+              'roi_median_range_m,roi_median_angle_deg,roi_median_snr_db,' ...
+              'expected_direction,inferred_direction,direction_matches_expected\n']);
 for idx = 1:size(metrics, 1)
     fprintf(fid, ['%s,%s,%d,%d,%d,%d,%d,%.12g,%.12g,%.12g,%.12g,' ...
-        '%.12g,%.12g,%d,%.12g,%.12g,%.12g,%.12g,%.12g,%.12g\n'], ...
-        metrics{idx, :});
+        '%.12g,%.12g,%d,%.12g,%.12g,%.12g,%.12g,%.12g,%.12g'], ...
+        metrics{idx, 1:20});
+    fprintf(fid, ',%s,%s,%.12g\n', metrics{idx, 21:23});
 end
 clear cleanup;
 end

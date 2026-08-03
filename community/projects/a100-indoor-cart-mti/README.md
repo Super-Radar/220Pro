@@ -81,7 +81,7 @@ octave-cli --no-gui --quiet --eval "run_all"
 运行测试：
 
 ```powershell
-octave-cli --no-gui --quiet tests/run_tests.m
+octave-cli --no-gui --quiet --eval "addpath('tests'); run_tests"
 ```
 
 单独运行模块：
@@ -127,6 +127,8 @@ a100-indoor-cart-mti/
 | 移动目标速度误差 | 0.0241 m/s |
 | 含噪默认场景静态抑制度 | 76.5 dB |
 
+MTI 前后二维图共用 MTI 前峰值作为 0 dB 参考，因此图中的目标衰减和静态抑制可以直接比较，不会被分别归一化掩盖。
+
 ![教学仿真的 MTI 前后距离—多普勒图](figures/simulation_range_doppler_mti.png)
 
 ### 实测 ADC
@@ -139,6 +141,7 @@ a100-indoor-cart-mti/
 | 小推车/箱子远离 | 0 | 51.4 dB |
 
 该数值是 bin 域静态分量变化，不是目标检测增益，也不能证明对应某个物理速度。
+静止目标与空场的每个 Rx 距离谱使用同一个参考峰值，只在同一 Rx 内比较绝对幅度；不同 Rx 仍可能具有不同通道增益。
 
 ![实测静止目标与空场的 MTI 前后图](figures/measured_adc_static_background_mti.png)
 
@@ -152,13 +155,13 @@ a100-indoor-cart-mti/
 
 | 场景 | 起点→终点 | 距离斜率 | 中位径向速度 |
 | --- | ---: | ---: | ---: |
-| 小推车/箱子靠近 | 2.82→1.57 m | −0.0818 m/s | −0.15 m/s |
+| 小推车/箱子靠近 | 2.62→1.57 m | −0.0750 m/s | −0.15 m/s |
 | 小推车/箱子远离 | 1.20→2.89 m | +0.1772 m/s | +0.15 m/s |
 | 人员短距离远离 | 3.24→4.01 m | +0.0700 m/s | +0.10 m/s |
 
 ![真实靠近与远离检测包络](figures/measured_target_motion_trends.png)
 
-这里的“包络”不是身份跟踪结果。特别是原小推车远离场景的 TraTarget 只有 5 条记录、1 帧，因此只能依据 RawTarget 的速度符号、距离连续性和 SNR 展示总体趋势。
+这里的“包络”不是身份跟踪结果。算法不接收场景方向标签，而是分别构建靠近和远离假设，仅保留时间、距离连续且整体斜率与径向速度符号一致的分段，再自动选择证据较强的一侧。三组运动场景的自动推断方向均与采集记录一致。特别是原小推车远离场景的 TraTarget 只有 5 条记录、1 帧，因此仍只能依据 RawTarget 展示总体趋势。
 
 ## 参数研究结论
 

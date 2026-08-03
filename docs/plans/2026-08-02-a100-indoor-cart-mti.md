@@ -20,7 +20,7 @@
 
 **Step 1:** Write an environment test that verifies Octave is supported, the `signal` package loads, and output directories can be created.
 
-**Step 2:** Run `octave-cli --no-gui --quiet community/projects/a100-indoor-cart-mti/tests/run_tests.m`; expect the new test to fail because helpers do not exist.
+**Step 2:** Run `octave-cli --no-gui --quiet --eval "cd('community/projects/a100-indoor-cart-mti'); addpath('tests'); run_tests"`; expect the new test to fail because helpers do not exist.
 
 **Step 3:** Implement the minimal environment/config helpers and entry point.
 

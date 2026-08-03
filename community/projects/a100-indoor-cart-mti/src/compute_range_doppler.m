@@ -1,8 +1,11 @@
-function result = compute_range_doppler(beat, cfg, mti_order)
+function result = compute_range_doppler(beat, cfg, mti_order, display_reference_peak)
 %COMPUTE_RANGE_DOPPLER Windowed range FFT and centered Doppler FFT.
 
 if nargin < 3 || isempty(mti_order)
     mti_order = 0;
+end
+if nargin < 4
+    display_reference_peak = [];
 end
 [num_samples, num_chirps] = size(beat);
 if num_samples ~= cfg.num_samples || num_chirps ~= cfg.num_chirps
@@ -20,6 +23,9 @@ range_fft_full = fft(windowed, num_samples, 1);
 positive_bins = 1:(num_samples / 2);
 range_fft = range_fft_full(positive_bins, :);
 doppler_fft = fftshift(fft(range_fft, num_chirps, 2), 2);
+if isempty(display_reference_peak)
+    display_reference_peak = max(abs(doppler_fft(:)));
+end
 
 slope_hz_per_s = cfg.bandwidth_hz / cfg.chirp_duration_s;
 sample_rate_hz = cfg.num_samples / cfg.chirp_duration_s;
@@ -37,5 +43,6 @@ result = struct('mti_order', mti_order, ...
                 'range_fft', range_fft, ...
                 'range_profile', mean(abs(range_fft), 2), ...
                 'rd_complex', doppler_fft, ...
-                'rd_db', db_normalize(doppler_fft, -80));
+                'rd_db', db_normalize(doppler_fft, -80, display_reference_peak), ...
+                'display_reference_peak', display_reference_peak);
 end

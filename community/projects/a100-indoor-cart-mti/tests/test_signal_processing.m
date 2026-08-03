@@ -22,6 +22,12 @@ velocity_resolution = (cfg.c / cfg.fc_hz) / ...
 assert(abs(result.range_axis_m(range_idx) - cfg.targets.range_m) <= 1.5 * range_resolution);
 assert(abs(result.velocity_axis_mps(velocity_idx) - cfg.targets.velocity_mps) <= 1.5 * velocity_resolution);
 
+shared_peak = max(abs(result.rd_complex(:)));
+after = compute_range_doppler(scene.beat, cfg, 1, shared_peak);
+assert(max(after.rd_db(:)) < -1);
+assert(abs(db_normalize(2, -80, 4) - 20 * log10(0.5 + eps)) < 1e-12);
+assert_error_id(@() db_normalize(1, -80, -1), 'a100:InvalidDbReference');
+
 static_data = repmat((1:32).', 1, 16);
 cancelled = apply_mti(static_data, 1);
 assert(all(cancelled(:) == 0));

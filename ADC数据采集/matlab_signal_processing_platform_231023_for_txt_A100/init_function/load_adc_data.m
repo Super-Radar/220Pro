@@ -1,5 +1,10 @@
 function [adcData] = load_adc_data(file, Cfg)
 %LOAD_ADC_DATA Load CTSAI-A100 packed ADC text captures.
+%   Original author: ZhuXinpeng
+%   Original creation date: 2021-05-13
+%   Updated by yyqdbngt on 2026-08-02 to validate and skip the three-field
+%   A100 capture header before unpacking. The original virtual-channel and
+%   adc_mem_2_real_fixed processing path is retained below.
 %   Each file starts with three fields:
 %     receive_channel, samples_per_chirp, chirp_count
 %   The remaining uint32 words each contain two signed int16 ADC samples.

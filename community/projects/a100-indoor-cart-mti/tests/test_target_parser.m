@@ -31,11 +31,24 @@ synthetic.snr_db = [20; 22];
 synthetic.range_m = [2.5; 2.4];
 synthetic.polar_x_m = -synthetic.range_m .* sin(synthetic.angle_deg * pi / 180);
 synthetic.polar_y_m = synthetic.range_m .* cos(synthetic.angle_deg * pi / 180);
-track = extract_motion_track(synthetic, 'approaching');
+track = extract_motion_track(synthetic);
 assert(track.point_count == 2);
 assert(track.end_range_m < track.start_range_m);
-assert_error_id(@() extract_motion_track(synthetic, 'sideways'), ...
-    'a100:InvalidMotionDirection');
+assert(strcmp(track.inferred_direction, 'approaching'));
+
+synthetic.speed_mps = [0.2; 0.2];
+synthetic.range_m = [2.4; 2.5];
+synthetic.polar_x_m = -synthetic.range_m .* sin(synthetic.angle_deg * pi / 180);
+synthetic.polar_y_m = synthetic.range_m .* cos(synthetic.angle_deg * pi / 180);
+track = extract_motion_track(synthetic);
+assert(track.point_count == 2);
+assert(track.end_range_m > track.start_range_m);
+assert(strcmp(track.inferred_direction, 'receding'));
+
+synthetic.speed_mps = [0; 0];
+track = extract_motion_track(synthetic);
+assert(track.point_count == 0);
+assert(strcmp(track.inferred_direction, 'unknown'));
 
 clear cleanup;
 delete_if_exists(fixture);

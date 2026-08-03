@@ -7,7 +7,8 @@ end
 cfg.generate_reference_waveforms = false;
 scene = simulate_lfmcw_scene(cfg);
 before = compute_range_doppler(scene.beat, cfg, 0);
-after = compute_range_doppler(scene.beat, cfg, mti_order);
+display_reference_peak = max(abs(before.rd_complex(:)));
+after = compute_range_doppler(scene.beat, cfg, mti_order, display_reference_peak);
 
 target = cfg.targets(1);
 [before_peak, before_range, before_velocity] = local_peak(before, target, cfg);
