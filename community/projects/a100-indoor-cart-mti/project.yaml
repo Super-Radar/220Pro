@@ -1,0 +1,25 @@
+name: "校园室内低速目标检测与 MTI 静态杂波抑制"
+version: "1.0.0"
+product: "CTSAI-A100"
+author: "yyqdbngt"
+scene:
+  - "校园室内走廊"
+  - "教学楼楼道"
+  - "实验室门口"
+  - "室内房间"
+data_types:
+  - "ADC"
+  - "RawTarget point-cloud CSV"
+  - "TraTarget track CSV"
+  - "CAN ASC"
+development_environment:
+  - "MATLAB"
+  - "Windows"
+algorithms:
+  - "LFMCW simulation"
+  - "Range FFT"
+  - "2D FFT range-Doppler processing"
+  - "MTI static-clutter suppression"
+  - "Measured ADC bin-domain analysis"
+  - "RadarTools target motion-envelope analysis"
+radartools_version: "V1.4.7.1"

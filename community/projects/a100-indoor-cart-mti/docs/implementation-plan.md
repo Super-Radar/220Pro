@@ -133,4 +133,4 @@
 
 **Step 3:** Check `gh auth status` and local Git author/committer are `yyqdbngt`; commit only intentional files.
 
-**Step 4:** Push `btlqql/issue-8-indoor-cart-mti` to the `yyqdbngt/CTSAI-A100` fork and open a PR to `Super-Radar/CTSAI-A100:main` with `Closes #8` or `Relates to #8` as appropriate.
+**Step 4:** Push `btlqql/issue-8-indoor-cart-mti` to the `yyqdbngt/CTSAI-A100` fork, update the existing PR to `Super-Radar/CTSAI-A100:main`, and associate Issue #8 without automatic closure.

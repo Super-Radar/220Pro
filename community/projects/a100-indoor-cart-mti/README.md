@@ -99,12 +99,15 @@ run_target_analysis(pwd);
 ```text
 a100-indoor-cart-mti/
 ├── README.md
+├── project.yaml
 ├── run_all.m
 ├── data/
 │   ├── manifest.csv
 │   ├── adc/
 │   └── targets/
 ├── docs/
+│   ├── design.md
+│   ├── implementation-plan.md
 │   └── technical-article.md
 ├── figures/
 ├── results/

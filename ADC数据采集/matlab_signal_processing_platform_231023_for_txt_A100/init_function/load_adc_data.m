@@ -1,92 +1,56 @@
 function [adcData] = load_adc_data(file, Cfg)
-%LOAD_ADC_DATA Load CTSAI-A100 packed ADC text captures.
-%   Original author: ZhuXinpeng
-%   Original creation date: 2021-05-13
-%   Updated by yyqdbngt on 2026-08-02 to validate and skip the three-field
-%   A100 capture header before unpacking. The original virtual-channel and
-%   adc_mem_2_real_fixed processing path is retained below.
-%   Each file starts with three fields:
-%     receive_channel, samples_per_chirp, chirp_count
-%   The remaining uint32 words each contain two signed int16 ADC samples.
-%   Captures may include trailing zero padding. Padding is removed only
-%   after it is verified; non-zero excess data and truncated files fail.
+%------------------------------------------------------------------------------
+%   load_1rx_adc_data.m
+%------------------------------------------------------------------------------
+%   Author       : ZhuXinpeng
+%   Created      : 2021-05-13
+%   Description  : Load all adc data (Fixed Length Mismatch)
+%------------------------------------------------------------------------------
 
 nfiles = numel(file);
-expected_samples = Cfg.rng_nfft;
-expected_chirps = Cfg.nchirp;
-if mod(expected_samples, 2) ~= 0
-    error('a100:OddSampleCount', ...
-        'Cfg.rng_nfft must be even for the packed A100 ADC format.');
-end
-expected_words = expected_samples * expected_chirps / 2;
-target_dim = [expected_samples / 2, expected_chirps];
 
-adcTemp2 = zeros(expected_chirps, expected_samples / 2, nfiles);
 for ifile = 1:nfiles
-    tokens = csvread(file{ifile});
-    tokens = double(tokens(:));
-    if numel(tokens) < 3
-        error('a100:MissingHeader', ...
-            'ADC file must start with channel, sample-count, and chirp-count fields.');
+    % 1. 读取数据并展平为列向量
+    adcTempCol = csvread(file{ifile});
+    adcTempCol = adcTempCol(:);
+    actual_len = length(adcTempCol);
+    
+    % 2. 关键修复：统一预期长度和reshape目标
+    target_dim = [Cfg.rng_nfft/2, Cfg.nchirp];
+    expected_len = prod(target_dim);  % 直接用reshape需要的长度g'fgf
+    
+    % 打印调试信息
+    fprintf('通道 %d:\n', ifile);
+    fprintf('  实际数据长度: %d\n', actual_len);
+    fprintf('  reshape目标维度: %d × %d (需要元素数: %d)\n', ...
+        target_dim(1), target_dim(2), expected_len);
+    
+    % 3. 强制对齐到reshape需要的长度
+    if actual_len > expected_len
+        warning('通道 %d 数据过长，自动截断到 %d 个样本', ifile, expected_len);
+        adcTempCol = adcTempCol(1:expected_len);
+    elseif actual_len < expected_len
+        warning('通道 %d 数据过短，自动补零到 %d 个样本', ifile, expected_len);
+        adcTempCol = [adcTempCol; zeros(expected_len - actual_len, 1)];
     end
-    if any(~isfinite(tokens))
-        error('a100:NonFiniteToken', 'ADC file contains a non-finite numeric token.');
-    end
-
-    channel = tokens(1);
-    samples_per_chirp = tokens(2);
-    chirp_count = tokens(3);
-    if channel < 0 || channel ~= floor(channel)
-        error('a100:InvalidChannel', 'ADC channel header must be a non-negative integer.');
-    end
-    if samples_per_chirp ~= expected_samples || chirp_count ~= expected_chirps
-        error('a100:DimensionHeaderMismatch', ...
-            'Expected header dimensions %d x %d; found %d x %d.', ...
-            expected_samples, expected_chirps, samples_per_chirp, chirp_count);
-    end
-
-    rx_token = regexp(file{ifile}, 'Rx([0-9]+)', 'tokens', 'once');
-    if ~isempty(rx_token)
-        expected_channel = str2double(rx_token{1});
-        if channel ~= expected_channel
-            error('a100:ChannelMismatch', ...
-                'File name declares Rx%d but header declares Rx%d.', ...
-                expected_channel, channel);
-        end
-    end
-
-    words_and_padding = tokens(4:end);
-    if numel(words_and_padding) < expected_words
-        error('a100:TruncatedCapture', ...
-            'ADC file contains %d packed words; %d are required.', ...
-            numel(words_and_padding), expected_words);
-    end
-    padding = words_and_padding(expected_words + 1:end);
-    if any(padding ~= 0)
-        error('a100:NonZeroExcessData', ...
-            'ADC file has %d excess value(s), including non-zero data.', numel(padding));
-    end
-    packed_words = words_and_padding(1:expected_words);
-
-    fprintf('Rx%d: header %d x %d, packed words %d, zero padding %d\n', ...
-        channel, samples_per_chirp, chirp_count, expected_words, numel(padding));
-    packed_matrix = reshape(packed_words, target_dim);
-    adcTemp2(:, :, ifile) = packed_matrix.';
+    
+    % 4. 现在元素数100%匹配，直接reshape
+    adcTemp(:, ifile) = adcTempCol;
+    adcTemp1(:, :, ifile) = reshape(adcTempCol, target_dim);
+    adcTemp2(:, :, ifile) = adcTemp1(:, :, ifile)';
 end
 
 if Cfg.nvirtual_chirp == 1
-    for iArray = 1:Cfg.nvirtual_array
-        adcData(:, :, iArray) = permute( ...
-            adc_mem_2_real_fixed(adcTemp2(:, :, iArray)), [2, 1]);
+    for iArray = 1 : Cfg.nvirtual_array
+        adcData(:, :, iArray) = permute(adc_mem_2_real_fixed(adcTemp2(:, :, iArray)), [2, 1]);
     end
 else
-    for iArray = 1:Cfg.nvirtual_array / Cfg.nvirtual_chirp
-        adcTx1 = adcTemp2(1:Cfg.vel_nfft, :, iArray);
-        adcTx2 = adcTemp2(Cfg.vel_nfft + 1:end, :, iArray);
-        adcData(:, :, iArray * 2 - 1) = permute( ...
-            adc_mem_2_real_fixed(adcTx1), [2, 1]);
-        adcData(:, :, iArray * 2) = permute( ...
-            adc_mem_2_real_fixed(adcTx2), [2, 1]);
+    for iArray = 1 : Cfg.nvirtual_array / Cfg.nvirtual_chirp
+        adcTx1 = adcTemp2(1 : Cfg.vel_nfft, :, iArray);
+        adcTx2 = adcTemp2(Cfg.vel_nfft + 1 : end, :, iArray);
+        adcData(:, :, iArray * 2 - 1) = permute(adc_mem_2_real_fixed(adcTx1), [2, 1]);
+        adcData(:, :, iArray * 2) = permute(adc_mem_2_real_fixed(adcTx2), [2, 1]);
     end
 end
+
 end

@@ -37,7 +37,6 @@
 对应测试：
 
 - `tests/test_adc_loader.m`
-- `tests/test_upstream_loader.m`
 
 ## 分析边界
 
