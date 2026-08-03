@@ -18,7 +18,7 @@ community/projects/
 
 | 项目 | 方向 | 数据类型 | 开发环境 | 作者 |
 | -- | -- | ---- | ---- | -- |
-| 暂无 | -  | -    | -    | -  |
+| [a100-indoor-cart-mti](a100-indoor-cart-mti/) | 室内低速目标检测、LFMCW、2D-FFT 与 MTI | ADC、CAN、RawTarget、TraTarget | GNU Octave 11.3.0 | [@yyqdbngt](https://github.com/yyqdbngt) |
 
 随着项目被正式合并，我们会持续更新本页面。
 

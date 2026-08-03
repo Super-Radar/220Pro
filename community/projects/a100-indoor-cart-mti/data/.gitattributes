@@ -1,0 +1,6 @@
+# Preserve acquisition files byte-for-byte so manifest SHA-256 values are
+# stable across Windows and Unix checkouts. Generated documentation and the
+# manifest itself remain normal text files.
+adc/**/*.txt -text -whitespace
+targets/*.asc -text -whitespace
+targets/*.csv -text -whitespace

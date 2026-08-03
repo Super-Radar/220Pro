@@ -1,0 +1,6 @@
+metric,value,unit
+range_resolution,0.149896229,m
+velocity_resolution,0.108633051,m/s
+cart_range_error,0.00415084,m
+cart_velocity_error,0.0241008472,m/s
+static_suppression,76.4990522,dB
