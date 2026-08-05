@@ -44,7 +44,7 @@ ADC 采集界面中通常包含以下配置项：
 ADC 数据采集完成后，数据文件默认保存至：
 
 ```text
-tools/RadarTools_Release/adcData/
+RadarTools/RadarTools_Release/adcData/
 ```
 
 采集完成后，请确认该目录下已生成对应数据文件。
@@ -52,7 +52,7 @@ tools/RadarTools_Release/adcData/
 示例目录结构：
 
 ```text
-tools/RadarTools_Release/adcData/
+RadarTools/RadarTools_Release/adcData/
 ├── adc_rx0.txt
 ├── adc_rx1.txt
 ├── adc_rx2.txt
