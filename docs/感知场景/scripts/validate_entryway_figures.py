@@ -22,7 +22,7 @@ FIGURES = {
     "generate_entryway_multipath_geometry.py": "indoor-entryway-multipath-geometry",
 }
 
-LOCAL_RESOURCE_PATTERN = re.compile(r"\./(?:images|scripts)/[^)\s]+")
+LOCAL_RESOURCE_PATTERN = re.compile(r"\./(?:images|scripts|templates)/[^)\s]+")
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
 
