@@ -1,0 +1,2 @@
+environment_id,capture_date,location_type,radar_model,radar_alias,radar_height_m,radar_yaw_deg,radar_pitch_deg,near_distance_m,far_distance_m,corridor_width_m,doorway_width_m,mount_description,background_reflectors,radartools_version,notes
+E01,,indoor-entryway,CTSAI-A100,,,,,,,,,,,,
