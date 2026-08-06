@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">CTSAI-A100 室内出入口人员通行与静止占用测试示意图</title>
+  <desc id="desc">图中标出雷达、门口、近端参考点、远端参考点、静止观察区以及人员靠近和离开的运动方向。尺寸需要现场复测。</desc>
+  <defs>
+    <linearGradient id="fov" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#1f7a8c" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#1f7a8c" stop-opacity="0.04"/>
+    </linearGradient>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#176b87"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c86428"/>
+    </marker>
+    <style>
+      text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", sans-serif; fill: #24313a; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 17px; fill: #5b6870; }
+      .label { font-size: 18px; font-weight: 600; }
+      .note { font-size: 15px; fill: #5b6870; }
+      .small { font-size: 14px; fill: #5b6870; }
+      .wall { stroke: #34434d; stroke-width: 12; stroke-linecap: square; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="#ffffff"/>
+  <text x="70" y="65" class="title">室内出入口人员通行与静止占用测试示意图</text>
+  <text x="70" y="96" class="subtitle">CTSAI-A100 · 俯视布置草图 · 非精确比例</text>
+
+  <!-- Corridor and doorway -->
+  <rect x="70" y="135" width="900" height="690" rx="4" fill="#f7f9fa" stroke="#9aa7ad" stroke-width="2"/>
+  <line x1="70" y1="135" x2="970" y2="135" class="wall"/>
+  <line x1="70" y1="135" x2="70" y2="825" class="wall"/>
+  <line x1="970" y1="135" x2="970" y2="825" class="wall"/>
+  <line x1="70" y1="825" x2="385" y2="825" class="wall"/>
+  <line x1="655" y1="825" x2="970" y2="825" class="wall"/>
+  <line x1="385" y1="825" x2="385" y2="790" stroke="#c86428" stroke-width="5"/>
+  <line x1="655" y1="825" x2="655" y2="790" stroke="#c86428" stroke-width="5"/>
+  <text x="475" y="858" class="label" fill="#c86428">门口</text>
+
+  <!-- Radar and indicative field of view -->
+  <path d="M 520 770 L 240 225 Q 520 130 800 225 Z" fill="url(#fov)" stroke="#1f7a8c" stroke-width="2" stroke-dasharray="9 8"/>
+  <rect x="475" y="742" width="90" height="55" rx="8" fill="#1f7a8c"/>
+  <path d="M 495 742 L 520 712 L 545 742 Z" fill="#1f7a8c"/>
+  <circle cx="520" cy="766" r="8" fill="#ffffff" opacity="0.9"/>
+  <text x="585" y="763" class="label">CTSAI-A100</text>
+  <text x="585" y="788" class="note">安装位置、高度和角度待复测</text>
+  <text x="735" y="278" class="note" fill="#176b87">示意视场</text>
+  <text x="735" y="300" class="small">不表示实际性能边界</text>
+
+  <!-- Reference lines and zones -->
+  <line x1="220" y1="575" x2="820" y2="575" stroke="#176b87" stroke-width="3" stroke-dasharray="12 8"/>
+  <circle cx="520" cy="575" r="12" fill="#176b87"/>
+  <text x="225" y="555" class="label" fill="#176b87">近端参考线</text>
+  <text x="225" y="600" class="note">距雷达约 2 m，现场复测后更新</text>
+
+  <line x1="300" y1="280" x2="740" y2="280" stroke="#6f7e85" stroke-width="3" stroke-dasharray="12 8"/>
+  <circle cx="520" cy="280" r="12" fill="#6f7e85"/>
+  <text x="305" y="260" class="label">远端参考线</text>
+  <text x="305" y="305" class="note">距离待现场复测</text>
+
+  <rect x="395" y="445" width="250" height="95" rx="14" fill="#f4c95d" fill-opacity="0.20" stroke="#b88716" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="440" y="485" class="label" fill="#8a6512">静止观察区</text>
+  <text x="430" y="512" class="note">站立、停留、再次运动</text>
+
+  <!-- Motion directions -->
+  <line x1="455" y1="690" x2="455" y2="350" stroke="#176b87" stroke-width="5" marker-end="url(#arrow-blue)"/>
+  <text x="325" y="395" class="label" fill="#176b87">远离雷达</text>
+  <text x="326" y="420" class="note">距离随时间增加</text>
+
+  <line x1="585" y1="350" x2="585" y2="690" stroke="#c86428" stroke-width="5" marker-end="url(#arrow-orange)"/>
+  <text x="610" y="650" class="label" fill="#c86428">靠近雷达</text>
+  <text x="610" y="675" class="note">距离随时间减小</text>
+
+  <!-- Side panel -->
+  <rect x="1015" y="135" width="320" height="690" rx="12" fill="#f7f9fa" stroke="#c5cdd1" stroke-width="2"/>
+  <text x="1050" y="185" class="label">建议采集组</text>
+  <line x1="1050" y1="202" x2="1300" y2="202" stroke="#c5cdd1" stroke-width="2"/>
+
+  <circle cx="1062" cy="245" r="13" fill="#6f7e85"/>
+  <text x="1088" y="251" class="label">S0 空场基线</text>
+  <text x="1088" y="275" class="small">记录静态背景与虚警</text>
+
+  <circle cx="1062" cy="326" r="13" fill="#c86428"/>
+  <text x="1088" y="332" class="label">S1 人员靠近</text>
+  <text x="1088" y="356" class="small">远端 → 近端</text>
+
+  <circle cx="1062" cy="407" r="13" fill="#176b87"/>
+  <text x="1088" y="413" class="label">S2 人员远离</text>
+  <text x="1088" y="437" class="small">近端 → 远端</text>
+
+  <circle cx="1062" cy="488" r="13" fill="#b88716"/>
+  <text x="1088" y="494" class="label">S3 静止观察</text>
+  <text x="1088" y="518" class="small">近端位置站立</text>
+
+  <circle cx="1062" cy="569" r="13" fill="#815ac0"/>
+  <text x="1088" y="575" class="label">S4 短暂停留</text>
+  <text x="1088" y="599" class="small">运动 → 停留 → 运动</text>
+
+  <line x1="1050" y1="646" x2="1300" y2="646" stroke="#c5cdd1" stroke-width="2"/>
+  <text x="1050" y="684" class="label">现场需要补记</text>
+  <text x="1050" y="717" class="note">雷达高度与俯仰角</text>
+  <text x="1050" y="747" class="note">门宽、走廊宽度</text>
+  <text x="1050" y="777" class="note">近端与远端实测距离</text>
+
+  <text x="70" y="875" class="small">说明：本图仅用于规划采集动作和记录位置，不作为 CTSAI-A100 探测范围或人数统计性能说明。</text>
+</svg>
