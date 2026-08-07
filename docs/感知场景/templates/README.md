@@ -9,6 +9,16 @@
 
 两张表通过 `environment_id` 关联。`record_id` 在本批数据内必须唯一，建议沿用 `S3-R02` 形式，其中前半部分为场景编号，后半部分为重复序号。
 
+## 新建一次采集会话
+
+建议在仓库外建立独立数据目录。以下命令会复制两张空白模板并生成一份现场提示，不会扫描或复制已有雷达数据：
+
+```bash
+python "docs/感知场景/scripts/prepare_entryway_session.py" --output "D:/A100-data/entryway-YYYYMMDD" --environment-id E01
+```
+
+`--output` 必须指向不存在或为空的目录。只要目录中已有文件，脚本就会退出，不会覆盖原记录。`--environment-id` 可替换为本次场地编号，只允许使用字母、数字、点、下划线和连字符。
+
 ## 填写规则
 
 - `capture_date` 使用 `YYYY-MM-DD`；`start_time` 使用带时区的 ISO 8601 时间，例如 `YYYY-MM-DDThh:mm:ss+08:00`；
