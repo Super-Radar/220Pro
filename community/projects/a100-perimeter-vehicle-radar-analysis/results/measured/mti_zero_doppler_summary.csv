@@ -1,0 +1,4 @@
+scene,zero_doppler_before,zero_doppler_after_mti2,zero_doppler_after_mti3,mti2_suppression_db,mti3_suppression_db
+empty,2.0777868106e+12,106476126.503,302357.56441,42.903487,68.370801
+vehicle_approaching,2.9513049461e+12,126347689.189,312232.962202,43.684468,69.755353
+vehicle_receding,1.75292207707e+12,104819057.022,297564.236172,42.233224,67.701819
