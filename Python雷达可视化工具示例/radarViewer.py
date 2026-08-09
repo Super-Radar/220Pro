@@ -282,7 +282,7 @@ class RadarCluster:
         self.enable_clustering = BooleanVar(value=False)
         self.eps = DoubleVar(value=2.0)  # 聚类半径
         self.min_samples = IntVar(value=2)  # 最小样本数
-        self.cluster_colors = plt.get_cmap('tab10', 20)
+        self.cluster_colors = plt.cm.get_cmap('tab10', 20)  # 聚类颜色映射
 
     def cluster(self, df):
         if not self.enable_clustering.get() or df.empty or DBSCAN is None:

@@ -60,7 +60,7 @@
     .cfar_nr_scheme_sel = {0, 0, 0, 0, 0, 0, 0, 0},
     .cfar_nr_tdec = {4, 4, 4, 4, 4, 4, 4, 4},
     .cfar_os_alpha  =   {16.00, 64.00, 32.0, 25.0, 20.0, 15.0, 16.0, 12.00},
-	
+
     .cfar_sliding_win = 1,
     .cfar_sogo_alpha = {20, 15, 15, 15, 15, 15, 15, 15},
     .cfar_sogo_i = {0, 0, 0, 0, 0, 0, 0, 0},
@@ -116,7 +116,7 @@
     .agc_vga2_thres = 0.8,
     .agc_align_en = false,
     .adc_comp_en = false,
-    .rf_tia_gain = 1, 
+    .rf_tia_gain = 1,
     .rf_vga1_gain = 3,
     .rf_vga2_gain = 5,
     .rf_hpf1 = 2,
@@ -146,7 +146,7 @@
     .dml_2dsch_step = {16, 8},
     .dml_2dsch_end = {359, 359},
     .dml_extra_1d_en = {true, true},
-    .dml_p1p2_en = {true, true},	
+    .dml_p1p2_en = {true, true},
     .dml_respwr_coef = {0, 0, 0.1, -1, 0, 0, 0, 0.1, -1, 0},
     .acc_rng_hw = true,
     .acc_vel_hw = true,
@@ -156,5 +156,5 @@
     .cfar_region_sep_vel = {1, 126, 1, 126, 1, 126, 1, 126},
     .cfar_os_rnk_ratio = {0.278,  0.318, 0.4, 0.3, 0.4, 0.4, 0.4, 0.4},
 	.cfar_recwin_decimate = 0X0,
-	
+
     .sv_read_from_flash = false,

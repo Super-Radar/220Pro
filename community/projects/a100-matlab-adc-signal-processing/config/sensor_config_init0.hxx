@@ -112,7 +112,7 @@
     .agc_vga2_thres = 0.8,
     .agc_align_en = false,
     .adc_comp_en = false,
-    .rf_tia_gain = 1, 
+    .rf_tia_gain = 1,
     .rf_vga1_gain = 3,
     .rf_vga2_gain = 5,
     .rf_hpf1 = 2,
