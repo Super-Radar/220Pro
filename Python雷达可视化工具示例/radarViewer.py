@@ -807,9 +807,14 @@ class RadarPlayer(tk.Tk):
     def toggle(self):
         if not self.fns:
             return
-        self.playing = not self.playing
         if self.playing:
-            self.loop()
+            self.playing = False
+            if self.timer is not None:
+                self.after_cancel(self.timer)
+                self.timer = None
+            return
+        self.playing = True
+        self.loop()
 
     def loop(self):
         if not self.playing or not self.fns:
@@ -817,6 +822,7 @@ class RadarPlayer(tk.Tk):
         idx = self.fns.index(self.current)
         if idx + 1 >= len(self.fns):
             self.playing = False
+            self.timer = None
             return
         self.current = self.fns[idx+1]
         self.update_frame()
