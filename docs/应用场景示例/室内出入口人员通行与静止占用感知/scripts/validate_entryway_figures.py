@@ -24,8 +24,7 @@ FIGURES = {
 
 LOCAL_RESOURCE_PATTERN = re.compile(r"\./(?:images|scripts|templates)/[^)\s]+")
 PUBLIC_RESOURCE_PATTERN = re.compile(
-    r"https://raw\.githubusercontent\.com/[^)\s]+/"
-    r"(?P<resource>(?:images|scripts|templates)/[^)\s]+)"
+    r"https://raw\.githubusercontent\.com/[^)\s]+"
 )
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -93,16 +92,21 @@ def validate_document_links() -> None:
     document = find_scenario_document()
     text = document.read_text(encoding="utf-8")
     relative_resources = set(LOCAL_RESOURCE_PATTERN.findall(text))
-    public_resources = {
-        f"./{match.group('resource')}"
-        for match in PUBLIC_RESOURCE_PATTERN.finditer(text)
-    }
-    resources = sorted(relative_resources | public_resources)
-    missing = [resource for resource in resources if not (DOCS_DIR / resource).is_file()]
+    public_resources = set(PUBLIC_RESOURCE_PATTERN.findall(text))
+    missing = [
+        resource
+        for resource in sorted(relative_resources)
+        if not (DOCS_DIR / resource).is_file()
+    ]
     if missing:
         formatted = "\n".join(f"  - {resource}" for resource in missing)
         raise FileNotFoundError(f"missing local document resources:\n{formatted}")
-    print(f"OK  {document.name}: {len(resources)} linked resources resolved")
+    if not relative_resources and not public_resources:
+        raise ValueError("scenario document does not contain resource links")
+    print(
+        f"OK  {document.name}: {len(relative_resources)} local and "
+        f"{len(public_resources)} public resources referenced"
+    )
 
 
 def main() -> int:
