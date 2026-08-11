@@ -314,9 +314,15 @@ class RadarCluster:
 
         # 给数据添加聚类信息
         df['cluster_id'] = labels
-        df['cluster_center_x'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('center_x', df['X']))
-        df['cluster_center_y'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('center_y', df['Y']))
-        df['cluster_size'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('size', 1))
+        # 噪点没有聚类中心，回退到该点自身坐标，确保每行都是标量。
+        df['cluster_center_x'] = df['X']
+        df['cluster_center_y'] = df['Y']
+        df['cluster_size'] = 1
+        for label, info in cluster_info.items():
+            cluster_mask = df['cluster_id'] == label
+            df.loc[cluster_mask, 'cluster_center_x'] = info['center_x']
+            df.loc[cluster_mask, 'cluster_center_y'] = info['center_y']
+            df.loc[cluster_mask, 'cluster_size'] = info['size']
 
         return df
 
