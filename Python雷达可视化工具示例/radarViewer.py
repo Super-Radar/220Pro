@@ -114,11 +114,16 @@ class RadarParser:
             df['FrameNb'] = fnb
             df['Timestamp'] = info['ts']
 
-        numeric_cols = ['ObjId', 'range', 'speed', 'angle', 'RCS', 'snr', 'X', 'Y']
+        # ObjId 是目标行的身份标识：先保留转换失败的 NaN 并丢弃该行，
+        # 避免和其他可选数值字段一样填成 0，伪造出 ObjId=0 的目标。
+        if 'ObjId' in df.columns:
+            df['ObjId'] = pd.to_numeric(df['ObjId'], errors='coerce')
+            df = df.dropna(subset=['ObjId']).reset_index(drop=True)
+
+        numeric_cols = ['range', 'speed', 'angle', 'RCS', 'snr', 'X', 'Y']
         for col in numeric_cols:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
-        df = df.dropna(subset=['ObjId']).reset_index(drop=True)
         df = df[df['range'] >= 0].reset_index(drop=True)
 
         if 'angle' in df.columns and 'range' in df.columns:
