@@ -39,7 +39,8 @@ class RadarParser:
                 self.header_line = line.split(',')
                 break
         if self.header_line is None:
-            raise ValueError("未找到有效数据表头，文件格式不支持")
+            self._load_tabular_file()
+            return
 
         current_frame = None
         current_timestamp = None
@@ -78,17 +79,27 @@ class RadarParser:
                     }
 
         if not self.frame_index:
-            df = pd.read_csv(self.file_path, on_bad_lines='skip')
-            if 'FrameNb' not in df.columns:
-                df['FrameNb'] = 0
-            if 'Timestamp' not in df.columns:
-                df['Timestamp'] = datetime.now()
-            for fnb in df['FrameNb'].unique():
-                self.frame_index[fnb] = {
-                    'ts': df[df['FrameNb']==fnb]['Timestamp'].iloc[0],
-                    'count': len(df[df['FrameNb']==fnb])
-                }
-            self.df_all = df
+            self._load_tabular_file()
+
+    def _load_tabular_file(self):
+        """加载没有 START/END 元数据行的普通矩形 CSV。"""
+        df = pd.read_csv(self.file_path, on_bad_lines='skip')
+        required_columns = {'ObjId', 'range'}
+        missing_columns = required_columns.difference(df.columns)
+        if missing_columns:
+            missing = ', '.join(sorted(missing_columns))
+            raise ValueError(f"缺少必要数据列：{missing}")
+        if 'FrameNb' not in df.columns:
+            df['FrameNb'] = 0
+        if 'Timestamp' not in df.columns:
+            df['Timestamp'] = datetime.now()
+        for fnb in df['FrameNb'].unique():
+            frame = df[df['FrameNb'] == fnb]
+            self.frame_index[fnb] = {
+                'ts': frame['Timestamp'].iloc[0],
+                'count': len(frame)
+            }
+        self.df_all = df
 
     def get_frame(self, fnb):
         if fnb not in self.frame_index:
