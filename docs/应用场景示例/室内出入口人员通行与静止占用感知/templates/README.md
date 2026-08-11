@@ -14,7 +14,7 @@
 建议在仓库外建立独立数据目录。以下命令会复制两张空白模板并生成一份现场提示，不会扫描或复制已有雷达数据：
 
 ```bash
-python "docs/感知场景/scripts/prepare_entryway_session.py" --output "D:/A100-data/entryway-YYYYMMDD" --environment-id E01
+python "docs/应用场景示例/室内出入口人员通行与静止占用感知/scripts/prepare_entryway_session.py" --output "D:/A100-data/entryway-YYYYMMDD" --environment-id E01
 ```
 
 `--output` 必须指向不存在或为空的目录。只要目录中已有文件，脚本就会退出，不会覆盖原记录。`--environment-id` 可替换为本次场地编号，只允许使用字母、数字、点、下划线和连字符。
