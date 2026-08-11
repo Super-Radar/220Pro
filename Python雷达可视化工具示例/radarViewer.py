@@ -12,10 +12,12 @@ from collections import deque, defaultdict
 # 第三方库依赖处理
 try:
     from sklearn.cluster import DBSCAN
+except ImportError:
+    DBSCAN = None
+
+try:
     from scipy.optimize import linear_sum_assignment
 except ImportError:
-    messagebox.showwarning("依赖缺失", "请安装依赖：pip install scikit-learn scipy")
-    DBSCAN = None
     linear_sum_assignment = None
 
 plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -171,7 +173,7 @@ class RadarFilter:
 # ---------------------- 3. 卡尔曼目标跟踪器 ----------------------
 class KalmanTracker:
     def __init__(self):
-        self.enable_tracking = BooleanVar(value=True)
+        self.enable_tracking = BooleanVar(value=linear_sum_assignment is not None)
         self.match_thresh = DoubleVar(value=5.0)  # 匹配距离阈值
         self.max_lost_frames = IntVar(value=3)    # 最大丢失帧数
         self.next_id = 0
@@ -208,7 +210,7 @@ class KalmanTracker:
         return track
 
     def track(self, df):
-        if not self.enable_tracking.get() or df.empty:
+        if not self.enable_tracking.get() or df.empty or linear_sum_assignment is None:
             df['track_id'] = df['ObjId'] if 'ObjId' in df.columns else range(len(df))
             return df
         
@@ -600,6 +602,10 @@ class RadarPlayer(tk.Tk):
         self.update_frame()
 
     def _setup_track_tab(self, parent):
+        if linear_sum_assignment is None:
+            ttk.Label(parent, text="请安装依赖：pip install scipy", foreground="red").pack(pady=10)
+            return
+
         ttk.Checkbutton(parent, text="启用卡尔曼跟踪", variable=self.tracker.enable_tracking).pack(anchor=tk.W, pady=(0, 8))
         
         param_frame = ttk.LabelFrame(parent, text="跟踪参数", padding=8)
