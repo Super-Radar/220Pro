@@ -1,8 +1,8 @@
-\# 场景与 CTSAI-A100 实测数据采集说明
+# 场景与 CTSAI-A100 实测数据采集说明
 
 
 
-\## 1. 实验场景
+## 1. 实验场景
 
 
 
@@ -10,11 +10,11 @@
 
 
 
-\* 空环境
+* 空环境
 
-\* 车辆靠近雷达
+* 车辆靠近雷达
 
-\* 车辆远离雷达
+* 车辆远离雷达
 
 
 
@@ -24,9 +24,33 @@
 
 目标类型为车辆。
 
+### 1.1 实验布置与测试环境
+
+实测数据使用 CTSAI-A100 雷达进行采集。实验过程中，雷达固定在电动车前部车把附近，采集电脑随车放置并与雷达连接，用于完成 ADC 数据采集与保存。
+
+雷达安装后大致朝向电动车前方的道路区域。该安装方式便于在室外道路环境中进行车辆周界场景的数据采集，并保持雷达和采集设备作为一套整体平台进行移动和布置。
+
+测试场景为室外道路环境。实验区域包含道路、路缘、绿化带、建筑物以及路边设施等静态反射体，因此实测 ADC 数据除车辆目标外，也包含来自地面和周围静态环境的杂波与反射。
+
+实验现场及设备布置如下图所示：
+
+![CTSAI-A100 实测数据采集场景](images/acquisition_scene.png)
+
+图中 CTSAI-A100 雷达固定于电动车前部，采集电脑用于连接雷达并保存采集数据。
+
+### 1.2 车辆运动场景
+
+本项目主要采集以下三类实测场景：
+
+1. **空环境（empty）**：作为静态环境基线；
+2. **车辆靠近（vehicle_approaching）**：目标车辆沿道路向雷达所在区域靠近；
+3. **车辆远离（vehicle_receding）**：目标车辆沿道路逐渐远离雷达所在区域。
+
+车辆运动数据由多个独立 acquisition run 组成。由于 ALL channel 数据采集和保存所需时间较长，各 run 应理解为车辆运动过程中的离散场景样本，而不是严格连续、等时间间隔的运动轨迹。
 
 
-\## 2. 数据采集方式
+
+## 2. 数据采集方式
 
 
 
@@ -42,13 +66,13 @@
 
 
 
-\* Samples per chirp：1024
+* Samples per chirp：1024
 
-\* Chirps per frame：256
+* Chirps per frame：256
 
-\* Profile：Pf0
+* Profile：Pf0
 
-\* Receive channels：Rx0-Rx3
+* Receive channels：Rx0-Rx3
 
 
 
@@ -60,7 +84,7 @@
 
 
 
-\## 3. 数据数量
+## 3. 数据数量
 
 
 
@@ -68,7 +92,7 @@
 
 
 
-\### 空环境
+### 空环境
 
 
 
@@ -76,31 +100,15 @@
 
 
 
-\* 1 个 run
+* 1 个 run
 
-\* 每个 run 包含 Rx0-Rx3
+* 每个 run 包含 Rx0-Rx3
 
-\* 共 4 个 TXT 文件
-
-
-
-\### 车辆靠近
+* 共 4 个 TXT 文件
 
 
 
-采集 5 组数据：
-
-
-
-\* 5 个 run
-
-\* 每个 run 包含 Rx0-Rx3
-
-\* 共 20 个 TXT 文件
-
-
-
-\### 车辆远离
+### 车辆靠近
 
 
 
@@ -108,15 +116,31 @@
 
 
 
-\* 5 个 run
+* 5 个 run
 
-\* 每个 run 包含 Rx0-Rx3
+* 每个 run 包含 Rx0-Rx3
 
-\* 共 20 个 TXT 文件
+* 共 20 个 TXT 文件
 
 
 
-\## 4. 数据目录
+### 车辆远离
+
+
+
+采集 5 组数据：
+
+
+
+* 5 个 run
+
+* 每个 run 包含 Rx0-Rx3
+
+* 共 20 个 TXT 文件
+
+
+
+## 4. 数据目录
 
 
 
@@ -126,29 +150,29 @@ data/measured/
 
 ├── empty/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-├── vehicle\_approaching/
+├── vehicle_approaching/
 
-│   ├── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   ├── run_001_Pf0_Rx0~Rx3.txt
 
 │   ├── ...
 
-│   └── run\_005\_Pf0\_Rx0\~Rx3.txt
+│   └── run_005_Pf0_Rx0~Rx3.txt
 
-└── vehicle\_receding/
+└── vehicle_receding/
 
-&#x20;   ├── run\_001\_Pf0\_Rx0\~Rx3.txt
+    ├── run_001_Pf0_Rx0~Rx3.txt
 
-&#x20;   ├── ...
+    ├── ...
 
-&#x20;   └── run\_005\_Pf0\_Rx0\~Rx3.txt
+    └── run_005_Pf0_Rx0~Rx3.txt
 
 ```
 
 
 
-\## 5. 采集时序限制
+## 5. 采集时序限制
 
 
 
@@ -156,7 +180,7 @@ data/measured/
 
 
 
-在当前采集流程下，单个 RX 的一帧数据采集和保存需要十几秒左右。因此车辆靠近和车辆远离场景中的 run\_001 至 run\_005 不能解释为严格连续、等时间间隔采样的车辆运动轨迹。
+在当前采集流程下，单个 RX 的一帧数据采集和保存需要十几秒左右。因此车辆靠近和车辆远离场景中的 run_001 至 run_005 不能解释为严格连续、等时间间隔采样的车辆运动轨迹。
 
 
 
@@ -172,15 +196,15 @@ data/measured/
 
 
 
-\* ADC 数据分析
+* ADC 数据分析
 
-\* Range FFT
+* Range FFT
 
-\* Range-Doppler / 2D-FFT
+* Range-Doppler / 2D-FFT
 
-\* MTI 前后结果对比
+* MTI 前后结果对比
 
-\* 空环境、车辆靠近和车辆远离场景的特征观察
+* 空环境、车辆靠近和车辆远离场景的特征观察
 
 
 
@@ -188,7 +212,7 @@ data/measured/
 
 
 
-\## 6. 实测雷达配置
+## 6. 实测雷达配置
 
 
 
@@ -196,21 +220,21 @@ data/measured/
 
 
 
-\* Start frequency：76.3 GHz
+* Start frequency：76.3 GHz
 
-\* FMCW bandwidth：300 MHz
+* FMCW bandwidth：300 MHz
 
-\* Chirp ramp-up time：43 us
+* Chirp ramp-up time：43 us
 
-\* Chirp period：48 us
+* Chirp period：48 us
 
-\* ADC frequency：25 MHz
+* ADC frequency：25 MHz
 
-\* Range FFT size：1024
+* Range FFT size：1024
 
-\* Doppler FFT size：256
+* Doppler FFT size：256
 
-\* TX mode：SISO
+* TX mode：SISO
 
 
 
@@ -218,11 +242,11 @@ data/measured/
 
 
 
-\* 距离分辨率约 0.5245 m/bin
+* 距离分辨率约 0.5245 m/bin
 
-\* 速度分辨率约 0.1599 m/s/bin
+* 速度分辨率约 0.1599 m/s/bin
 
-\* 当前处理下无模糊速度范围约 ±20.46 m/s
+* 当前处理下无模糊速度范围约 ±20.46 m/s
 
 
 
@@ -230,7 +254,7 @@ data/measured/
 
 
 
-\## 7. 实验结果使用边界
+## 7. 实验结果使用边界
 
 
 

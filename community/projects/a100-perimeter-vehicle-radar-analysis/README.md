@@ -1,8 +1,8 @@
-\# CTSAI-A100 车辆周界感知实测与 LFMCW 雷达综合仿真
+# CTSAI-A100 车辆周界感知实测与 LFMCW 雷达综合仿真
 
 
 
-本项目基于 \*\*CTSAI-A100\*\*，针对车辆周界感知场景开展 ADC 实测数据分析与 MATLAB LFMCW 雷达综合仿真。
+本项目基于 **CTSAI-A100**，针对车辆周界感知场景开展 ADC 实测数据分析与 MATLAB LFMCW 雷达综合仿真。
 
 
 
@@ -10,11 +10,11 @@
 
 
 
-\* 空环境
+* 空环境
 
-\* 车辆靠近雷达
+* 车辆靠近雷达
 
-\* 车辆远离雷达
+* 车辆远离雷达
 
 
 
@@ -30,11 +30,11 @@
 
 
 
-\---
+---
 
 
 
-\## 1. 项目目标
+## 1. 项目目标
 
 
 
@@ -42,49 +42,49 @@
 
 
 
-1\. 使用 CTSAI-A100 采集车辆周界场景 ADC 数据；
+1. 使用 CTSAI-A100 采集车辆周界场景 ADC 数据；
 
-2\. 分析空环境、车辆靠近和车辆远离场景；
+2. 分析空环境、车辆靠近和车辆远离场景；
 
-3\. 对实测 ADC 数据进行 Range FFT 和 Range-Doppler / 2D-FFT 处理；
+3. 对实测 ADC 数据进行 Range FFT 和 Range-Doppler / 2D-FFT 处理；
 
-4\. 对比 MTI 处理前后的静态/近静态杂波特征；
+4. 对比 MTI 处理前后的静态/近静态杂波特征；
 
-5\. 使用 MATLAB 建立 LFMCW 雷达综合仿真；
+5. 使用 MATLAB 建立 LFMCW 雷达综合仿真；
 
-6\. 仿真发射 LFM chirp、目标回波和差频信号；
+6. 仿真发射 LFM chirp、目标回波和差频信号；
 
-7\. 生成 LFMCW 时频图；
+7. 生成 LFMCW 时频图；
 
-8\. 仿真运动目标和静态杂波的 Range-Doppler 响应；
+8. 仿真运动目标和静态杂波的 Range-Doppler 响应；
 
-9\. 分析 LFM 频宽、时宽、PRF、目标数量、目标速度和 MTI 阶数的影响；
+9. 分析 LFM 频宽、时宽、PRF、目标数量、目标速度和 MTI 阶数的影响；
 
-10\. 对 MATLAB 仿真结果和 CTSAI-A100 实测结果进行对比，并说明两者之间的差异与实验边界。
-
-
-
-\---
+10. 对 MATLAB 仿真结果和 CTSAI-A100 实测结果进行对比，并说明两者之间的差异与实验边界。
 
 
 
-\## 2. 开发环境
+---
 
 
 
-\* Radar：CTSAI-A100
+## 2. 开发环境
 
-\* Operating System：Windows
 
-\* MATLAB：R2024b
 
-\* 数据类型：CTSAI-A100 ADC TXT
+* Radar：CTSAI-A100
 
-\* Profile：Pf0
+* Operating System：Windows
 
-\* Receive channels：Rx0-Rx3
+* MATLAB：R2024b
 
-\* Acquisition mode：ALL channel
+* 数据类型：CTSAI-A100 ADC TXT
+
+* Profile：Pf0
+
+* Receive channels：Rx0-Rx3
+
+* Acquisition mode：ALL channel
 
 
 
@@ -122,19 +122,19 @@
 
 
 
-\* 距离分辨率约：`0.5245 m/bin`
+* 距离分辨率约：`0.5245 m/bin`
 
-\* 速度分辨率约：`0.1599 m/s/bin`
+* 速度分辨率约：`0.1599 m/s/bin`
 
-\* 当前处理对应的无模糊速度范围约：`±20.46 m/s`
-
-
-
-\---
+* 当前处理对应的无模糊速度范围约：`±20.46 m/s`
 
 
 
-\## 3. 项目目录
+---
+
+
+
+## 3. 项目目录
 
 
 
@@ -150,9 +150,9 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 ├── config/
 
-│   ├── sensor\_config\_init0.hxx
+│   ├── sensor_config_init0.hxx
 
-│   └── simulation\_config.m
+│   └── simulation_config.m
 
 │
 
@@ -164,9 +164,9 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 │       ├── empty/
 
-│       ├── vehicle\_approaching/
+│       ├── vehicle_approaching/
 
-│       └── vehicle\_receding/
+│       └── vehicle_receding/
 
 │
 
@@ -182,11 +182,11 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 ├── docs/
 
-│   ├── SCENE\_AND\_ACQUISITION.md
+│   ├── SCENE_AND_ACQUISITION.md
 
-│   ├── LFMCW\_SIMULATION.md
+│   ├── LFMCW_SIMULATION.md
 
-│   └── SIMULATION\_VS\_MEASUREMENT.md
+│   └── SIMULATION_VS_MEASUREMENT.md
 
 │
 
@@ -196,7 +196,7 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 │   └── simulation/
 
-│       └── parameter\_study/
+│       └── parameter_study/
 
 │
 
@@ -206,11 +206,11 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 
 
-\---
+---
 
 
 
-\## 4. 实测场景与数据
+## 4. 实测场景与数据
 
 
 
@@ -218,7 +218,7 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 
 
-\### 4.1 空环境
+### 4.1 空环境
 
 
 
@@ -226,15 +226,15 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 
 
-\* 1 个 acquisition run
+* 1 个 acquisition run
 
-\* Rx0-Rx3
+* Rx0-Rx3
 
-\* 共 4 个 ADC TXT 文件
+* 共 4 个 ADC TXT 文件
 
 
 
-\### 4.2 车辆靠近
+### 4.2 车辆靠近
 
 
 
@@ -242,15 +242,15 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 
 
-\* 5 个 acquisition runs
+* 5 个 acquisition runs
 
-\* 每个 run 包含 Rx0-Rx3
+* 每个 run 包含 Rx0-Rx3
 
-\* 共 20 个 ADC TXT 文件
+* 共 20 个 ADC TXT 文件
 
 
 
-\### 4.3 车辆远离
+### 4.3 车辆远离
 
 
 
@@ -258,11 +258,11 @@ community/projects/a100-perimeter-vehicle-radar-analysis/
 
 
 
-\* 5 个 acquisition runs
+* 5 个 acquisition runs
 
-\* 每个 run 包含 Rx0-Rx3
+* 每个 run 包含 Rx0-Rx3
 
-\* 共 20 个 ADC TXT 文件
+* 共 20 个 ADC TXT 文件
 
 
 
@@ -288,27 +288,27 @@ data/measured/
 
 ├── empty/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
 │
 
-├── vehicle\_approaching/
+├── vehicle_approaching/
 
-│   ├── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   ├── run_001_Pf0_Rx0~Rx3.txt
 
 │   ├── ...
 
-│   └── run\_005\_Pf0\_Rx0\~Rx3.txt
+│   └── run_005_Pf0_Rx0~Rx3.txt
 
 │
 
-└── vehicle\_receding/
+└── vehicle_receding/
 
-&#x20;   ├── run\_001\_Pf0\_Rx0\~Rx3.txt
+    ├── run_001_Pf0_Rx0~Rx3.txt
 
-&#x20;   ├── ...
+    ├── ...
 
-&#x20;   └── run\_005\_Pf0\_Rx0\~Rx3.txt
+    └── run_005_Pf0_Rx0~Rx3.txt
 
 ```
 
@@ -318,15 +318,15 @@ data/measured/
 
 
 
-`docs/SCENE\_AND\_ACQUISITION.md`
+`docs/SCENE_AND_ACQUISITION.md`
 
 
 
-\---
+---
 
 
 
-\## 5. 数据采集限制
+## 5. 数据采集限制
 
 
 
@@ -342,13 +342,13 @@ data/measured/
 
 
 
-\* 车辆靠近场景中的 5 个 run 是多个离散采集样本；
+* 车辆靠近场景中的 5 个 run 是多个离散采集样本；
 
-\* 车辆远离场景中的 5 个 run 同样是多个离散采集样本；
+* 车辆远离场景中的 5 个 run 同样是多个离散采集样本；
 
-\* `run\_001` 至 `run\_005` 不应被解释为严格连续、等时间间隔的车辆运动轨迹；
+* `run_001` 至 `run_005` 不应被解释为严格连续、等时间间隔的车辆运动轨迹；
 
-\* Rx0-Rx3 不被假设为运动车辆完全同一时刻的严格同步阵列快照。
+* Rx0-Rx3 不被假设为运动车辆完全同一时刻的严格同步阵列快照。
 
 
 
@@ -360,11 +360,11 @@ data/measured/
 
 
 
-\---
+---
 
 
 
-\## 6. CTSAI-A100 ADC 数据解析
+## 6. CTSAI-A100 ADC 数据解析
 
 
 
@@ -376,15 +376,15 @@ data/measured/
 
 
 
-\* 44 个 TXT 文件均可以正常读取；
+* 44 个 TXT 文件均可以正常读取；
 
-\* Rx index 均为 0、1、2、3；
+* Rx index 均为 0、1、2、3；
 
-\* Samples per chirp 均为 1024；
+* Samples per chirp 均为 1024；
 
-\* Chirp count 均为 256；
+* Chirp count 均为 256；
 
-\* ADC payload 完整。
+* ADC payload 完整。
 
 
 
@@ -396,11 +396,11 @@ data/measured/
 
 
 
-\---
+---
 
 
 
-\## 7. 实测信号处理
+## 7. 实测信号处理
 
 
 
@@ -412,35 +412,35 @@ data/measured/
 
 CTSAI-A100 ADC TXT
 
-&#x20;       ↓
+        ↓
 
 TXT parsing
 
-&#x20;       ↓
+        ↓
 
 Packed uint32 ADC unpacking
 
-&#x20;       ↓
+        ↓
 
 Fast-time DC removal
 
-&#x20;       ↓
+        ↓
 
 Range FFT
 
-&#x20;       ↓
+        ↓
 
 Range-slow-time data
 
-&#x20;       ↓
+        ↓
 
 MTI / clutter suppression
 
-&#x20;       ↓
+        ↓
 
 Doppler FFT
 
-&#x20;       ↓
+        ↓
 
 Range-Doppler Map
 
@@ -456,11 +456,11 @@ Range-Doppler Map
 
 
 
-\---
+---
 
 
 
-\## 8. 实测 Range FFT
+## 8. 实测 Range FFT
 
 
 
@@ -478,21 +478,21 @@ Range-Doppler Map
 
 ```text
 
-results/measured/empty/range\_spectrum\_physical.png
+results/measured/empty/range_spectrum_physical.png
 
-results/measured/vehicle\_approaching/range\_spectrum\_physical.png
+results/measured/vehicle_approaching/range_spectrum_physical.png
 
-results/measured/vehicle\_receding/range\_spectrum\_physical.png
+results/measured/vehicle_receding/range_spectrum_physical.png
 
 ```
 
 
 
-\---
+---
 
 
 
-\## 9. 实测 Range-Doppler / 2D-FFT
+## 9. 实测 Range-Doppler / 2D-FFT
 
 
 
@@ -506,19 +506,19 @@ results/measured/vehicle\_receding/range\_spectrum\_physical.png
 
 ```text
 
-results/measured/empty/range\_doppler\_before\_mti\_physical.png
+results/measured/empty/range_doppler_before_mti_physical.png
 
 
 
-results/measured/vehicle\_approaching/
+results/measured/vehicle_approaching/
 
-&#x20;   range\_doppler\_before\_mti\_physical.png
+    range_doppler_before_mti_physical.png
 
 
 
-results/measured/vehicle\_receding/
+results/measured/vehicle_receding/
 
-&#x20;   range\_doppler\_before\_mti\_physical.png
+    range_doppler_before_mti_physical.png
 
 ```
 
@@ -528,17 +528,17 @@ results/measured/vehicle\_receding/
 
 
 
-\* Range：m
+* Range：m
 
-\* Radial Velocity：m/s
-
-
-
-\---
+* Radial Velocity：m/s
 
 
 
-\## 10. 实测 MTI
+---
+
+
+
+## 10. 实测 MTI
 
 
 
@@ -552,7 +552,7 @@ MTI2：
 
 ```text
 
-y\[n] = x\[n] - x\[n-1]
+y[n] = x[n] - x[n-1]
 
 ```
 
@@ -564,7 +564,7 @@ MTI3：
 
 ```text
 
-y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
+y[n] = x[n] - 2x[n-1] + x[n-2]
 
 ```
 
@@ -576,11 +576,11 @@ y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
 
 ```text
 
-range\_doppler\_before\_mti\_physical.png
+range_doppler_before_mti_physical.png
 
-range\_doppler\_after\_mti2\_physical.png
+range_doppler_after_mti2_physical.png
 
-range\_doppler\_after\_mti3\_physical.png
+range_doppler_after_mti3_physical.png
 
 ```
 
@@ -592,7 +592,7 @@ range\_doppler\_after\_mti3\_physical.png
 
 ```text
 
-\-0.32 m/s \~ +0.32 m/s
+-0.32 m/s ~ +0.32 m/s
 
 ```
 
@@ -630,15 +630,15 @@ range\_doppler\_after\_mti3\_physical.png
 
 
 
-`results/measured/mti\_zero\_doppler\_summary.csv`
+`results/measured/mti_zero_doppler_summary.csv`
 
 
 
-\---
+---
 
 
 
-\## 11. MATLAB LFMCW 综合仿真
+## 11. MATLAB LFMCW 综合仿真
 
 
 
@@ -650,9 +650,9 @@ range\_doppler\_after\_mti3\_physical.png
 
 
 
-\* Initial range：30 m
+* Initial range：30 m
 
-\* Radial velocity：-5 m/s
+* Radial velocity：-5 m/s
 
 
 
@@ -678,35 +678,35 @@ v > 0 : receding
 
 LFMCW transmitted chirp
 
-&#x20;       ↓
+        ↓
 
 Propagation delay
 
-&#x20;       ↓
+        ↓
 
 Moving-target Doppler
 
-&#x20;       ↓
+        ↓
 
 Target echo
 
-&#x20;       ↓
+        ↓
 
 Dechirp
 
-&#x20;       ↓
+        ↓
 
 Beat signal
 
-&#x20;       ↓
+        ↓
 
 Range FFT
 
-&#x20;       ↓
+        ↓
 
 Doppler FFT
 
-&#x20;       ↓
+        ↓
 
 Range-Doppler Map
 
@@ -714,11 +714,11 @@ Range-Doppler Map
 
 
 
-\---
+---
 
 
 
-\## 12. LFMCW 发射信号、回波和差频信号
+## 12. LFMCW 发射信号、回波和差频信号
 
 
 
@@ -726,35 +726,35 @@ Range-Doppler Map
 
 
 
-\### 发射 LFM 信号
+### 发射 LFM 信号
 
 
 
-`results/simulation/lfmcw\_tx\_waveform.png`
+`results/simulation/lfmcw_tx_waveform.png`
 
 
 
-\### 运动目标回波
+### 运动目标回波
 
 
 
-`results/simulation/lfmcw\_target\_echo.png`
+`results/simulation/lfmcw_target_echo.png`
 
 
 
-\### 差频信号
+### 差频信号
 
 
 
-`results/simulation/lfmcw\_beat\_signal.png`
+`results/simulation/lfmcw_beat_signal.png`
 
 
 
-\### 时频图
+### 时频图
 
 
 
-`results/simulation/lfmcw\_tx\_spectrogram.png`
+`results/simulation/lfmcw_tx_spectrogram.png`
 
 
 
@@ -762,11 +762,11 @@ Range-Doppler Map
 
 
 
-\---
+---
 
 
 
-\## 13. 仿真 Range-Doppler 和 MTI
+## 13. 仿真 Range-Doppler 和 MTI
 
 
 
@@ -774,11 +774,11 @@ Range-Doppler Map
 
 
 
-\* 运动目标；
+* 运动目标；
 
-\* 多个静态反射体；
+* 多个静态反射体；
 
-\* 复高斯噪声。
+* 复高斯噪声。
 
 
 
@@ -788,9 +788,9 @@ Range-Doppler Map
 
 ```text
 
-results/simulation/simulation\_range\_doppler\_before\_mti.png
+results/simulation/simulation_range_doppler_before_mti.png
 
-results/simulation/simulation\_range\_doppler\_after\_mti.png
+results/simulation/simulation_range_doppler_after_mti.png
 
 ```
 
@@ -804,11 +804,11 @@ results/simulation/simulation\_range\_doppler\_after\_mti.png
 
 
 
-\---
+---
 
 
 
-\## 14. 参数影响实验
+## 14. 参数影响实验
 
 
 
@@ -822,13 +822,13 @@ results/simulation/simulation\_range\_doppler\_after\_mti.png
 
 ```text
 
-results/simulation/parameter\_study/
+results/simulation/parameter_study/
 
 ```
 
 
 
-\### 14.1 LFM 频宽
+### 14.1 LFM 频宽
 
 
 
@@ -836,11 +836,11 @@ results/simulation/parameter\_study/
 
 
 
-\* 150 MHz
+* 150 MHz
 
-\* 300 MHz
+* 300 MHz
 
-\* 450 MHz
+* 450 MHz
 
 
 
@@ -848,7 +848,7 @@ results/simulation/parameter\_study/
 
 
 
-`bandwidth\_study.png`
+`bandwidth_study.png`
 
 
 
@@ -856,7 +856,7 @@ results/simulation/parameter\_study/
 
 
 
-\### 14.2 LFM 时宽
+### 14.2 LFM 时宽
 
 
 
@@ -868,7 +868,7 @@ results/simulation/parameter\_study/
 
 
 
-`chirp\_duration\_study.png`
+`chirp_duration_study.png`
 
 
 
@@ -876,7 +876,7 @@ results/simulation/parameter\_study/
 
 
 
-\### 14.3 Chirp Period / PRF
+### 14.3 Chirp Period / PRF
 
 
 
@@ -888,7 +888,7 @@ results/simulation/parameter\_study/
 
 
 
-`prf\_study.png`
+`prf_study.png`
 
 
 
@@ -896,7 +896,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\### 14.4 目标数量
+### 14.4 目标数量
 
 
 
@@ -904,11 +904,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\* 1 个目标
+* 1 个目标
 
-\* 2 个目标
+* 2 个目标
 
-\* 3 个目标
+* 3 个目标
 
 
 
@@ -916,7 +916,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-`target\_number\_study.png`
+`target_number_study.png`
 
 
 
@@ -924,7 +924,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\### 14.5 目标速度
+### 14.5 目标速度
 
 
 
@@ -932,11 +932,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\* -2 m/s
+* -2 m/s
 
-\* -5 m/s
+* -5 m/s
 
-\* -10 m/s
+* -10 m/s
 
 
 
@@ -944,7 +944,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-`target\_velocity\_study.png`
+`target_velocity_study.png`
 
 
 
@@ -952,7 +952,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\### 14.6 MTI 阶数
+### 14.6 MTI 阶数
 
 
 
@@ -960,11 +960,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
@@ -972,7 +972,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样和�
 
 
 
-`mti\_order\_study.png`
+`mti_order_study.png`
 
 
 
@@ -988,15 +988,15 @@ MTI3 对近零 Doppler 的抑制更加明显，同时滤波作用也更加激进
 
 
 
-`docs/LFMCW\_SIMULATION.md`
+`docs/LFMCW_SIMULATION.md`
 
 
 
-\---
+---
 
 
 
-\## 15. 仿真与实测结果对比
+## 15. 仿真与实测结果对比
 
 
 
@@ -1004,7 +1004,7 @@ MATLAB 仿真与 CTSAI-A100 实测结果主要表现出以下共同特征：
 
 
 
-\### 静态背景
+### 静态背景
 
 
 
@@ -1016,7 +1016,7 @@ MATLAB 仿真与 CTSAI-A100 实测结果主要表现出以下共同特征：
 
 
 
-\### MTI
+### MTI
 
 
 
@@ -1028,11 +1028,11 @@ MATLAB 仿真与 CTSAI-A100 实测结果主要表现出以下共同特征：
 
 Before MTI
 
-&#x20;   ↓
+    ↓
 
 MTI2 / MTI3
 
-&#x20;   ↓
+    ↓
 
 Zero / near-zero Doppler energy decreases
 
@@ -1044,7 +1044,7 @@ Zero / near-zero Doppler energy decreases
 
 
 
-\### 运动目标
+### 运动目标
 
 
 
@@ -1056,19 +1056,19 @@ Zero / near-zero Doppler energy decreases
 
 
 
-\* 车身散射；
+* 车身散射；
 
-\* 车轮散射；
+* 车轮散射；
 
-\* 玻璃和金属结构散射；
+* 玻璃和金属结构散射；
 
-\* 地面反射；
+* 地面反射；
 
-\* 环境杂波；
+* 环境杂波；
 
-\* 多径；
+* 多径；
 
-\* 系统噪声。
+* 系统噪声。
 
 
 
@@ -1080,19 +1080,19 @@ Zero / near-zero Doppler energy decreases
 
 
 
-`docs/SIMULATION\_VS\_MEASUREMENT.md`
+`docs/SIMULATION_VS_MEASUREMENT.md`
 
 
 
-\---
+---
 
 
 
-\## 16. 如何运行
+## 16. 如何运行
 
 
 
-\### 16.1 准备 MATLAB
+### 16.1 准备 MATLAB
 
 
 
@@ -1112,7 +1112,7 @@ cd('community/projects/a100-perimeter-vehicle-radar-analysis')
 
 
 
-\### 16.2 统一入口
+### 16.2 统一入口
 
 
 
@@ -1166,79 +1166,79 @@ All Issue #13 experiments completed successfully.
 
 
 
-\---
+---
 
 
 
-\## 17. 单独运行实验
+## 17. 单独运行实验
 
 
 
-\### 检查实测 ADC 数据
-
-
-
-```matlab
-
-run('tests/inspect\_measured\_dataset.m')
-
-```
-
-
-
-\### 检查物理 Range / Velocity 坐标
+### 检查实测 ADC 数据
 
 
 
 ```matlab
 
-run('tests/check\_measured\_physical\_axes.m')
+run('tests/inspect_measured_dataset.m')
 
 ```
 
 
 
-\### 实测代表性数据处理
+### 检查物理 Range / Velocity 坐标
 
 
 
 ```matlab
 
-run('tests/run\_measured\_physical\_analysis.m')
+run('tests/check_measured_physical_axes.m')
 
 ```
 
 
 
-\### LFMCW 综合仿真
+### 实测代表性数据处理
 
 
 
 ```matlab
 
-run('tests/run\_lfmcw\_simulation.m')
+run('tests/run_measured_physical_analysis.m')
 
 ```
 
 
 
-\### 参数影响实验
+### LFMCW 综合仿真
 
 
 
 ```matlab
 
-run('tests/run\_parameter\_studies.m')
+run('tests/run_lfmcw_simulation.m')
 
 ```
 
 
 
-\---
+### 参数影响实验
 
 
 
-\## 18. 实验结果目录
+```matlab
+
+run('tests/run_parameter_studies.m')
+
+```
+
+
+
+---
+
+
+
+## 18. 实验结果目录
 
 
 
@@ -1272,7 +1272,7 @@ results/simulation/
 
 ```text
 
-results/simulation/parameter\_study/
+results/simulation/parameter_study/
 
 ```
 
@@ -1282,11 +1282,11 @@ results/simulation/parameter\_study/
 
 
 
-\---
+---
 
 
 
-\## 19. 实验边界
+## 19. 实验边界
 
 
 
@@ -1294,11 +1294,11 @@ results/simulation/parameter\_study/
 
 
 
-1\. MATLAB 理想化仿真结果；
+1. MATLAB 理想化仿真结果；
 
-2\. CTSAI-A100 实际 ADC 数据分析结果；
+2. CTSAI-A100 实际 ADC 数据分析结果；
 
-3\. CTSAI-A100 产品本身的最终检测性能。
+3. CTSAI-A100 产品本身的最终检测性能。
 
 
 
@@ -1318,65 +1318,65 @@ MATLAB 仿真使用可控参数和简化目标模型，适合研究 LFMCW 雷达
 
 
 
-\---
+---
 
 
 
-\## 20. 相关文档
+## 20. 相关文档
 
 
 
-\* `docs/SCENE\_AND\_ACQUISITION.md`
+* `docs/SCENE_AND_ACQUISITION.md`
 
 
 
-&#x20; \* 实验场景、数据组织、采集方式及采集限制
+  * 实验场景、数据组织、采集方式及采集限制
 
 
 
-\* `docs/LFMCW\_SIMULATION.md`
+* `docs/LFMCW_SIMULATION.md`
 
 
 
-&#x20; \* LFMCW 仿真、2D-FFT、MTI 和参数实验
+  * LFMCW 仿真、2D-FFT、MTI 和参数实验
 
 
 
-\* `docs/SIMULATION\_VS\_MEASUREMENT.md`
+* `docs/SIMULATION_VS_MEASUREMENT.md`
 
 
 
-&#x20; \* MATLAB 仿真和 CTSAI-A100 实测结果对比
+  * MATLAB 仿真和 CTSAI-A100 实测结果对比
 
 
 
-\* `data/README.md`
+* `data/README.md`
 
 
 
-&#x20; \* ADC 数据目录及使用说明
+  * ADC 数据目录及使用说明
 
 
 
-\---
+---
 
 
 
-\## 21. 作者
+## 21. 作者
 
 
 
-\* Author / Team：DwHz
+* Author / Team：DwHz
 
-\* GitHub：@DwHz
-
-
-
-\---
+* GitHub：@DwHz
 
 
 
-\## 22. Issue
+---
+
+
+
+## 22. Issue
 
 
 
@@ -1388,21 +1388,21 @@ MATLAB 仿真使用可控参数和简化目标模型，适合研究 LFMCW 雷达
 
 
 
-\* 车辆周界场景实测数据采集；
+* 车辆周界场景实测数据采集；
 
-\* CTSAI-A100 ADC 信号处理；
+* CTSAI-A100 ADC 信号处理；
 
-\* MATLAB LFMCW 综合仿真；
+* MATLAB LFMCW 综合仿真；
 
-\* 时频分析；
+* 时频分析；
 
-\* Range-Doppler / 2D-FFT；
+* Range-Doppler / 2D-FFT；
 
-\* MTI；
+* MTI；
 
-\* 参数影响分析；
+* 参数影响分析；
 
-\* 仿真与实测结果比较。
+* 仿真与实测结果比较。
 
 
 

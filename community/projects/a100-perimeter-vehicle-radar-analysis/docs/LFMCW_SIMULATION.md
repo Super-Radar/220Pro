@@ -1,8 +1,8 @@
-\# MATLAB LFMCW 综合仿真与参数分析
+# MATLAB LFMCW 综合仿真与参数分析
 
 
 
-\## 1. 仿真目的
+## 1. 仿真目的
 
 
 
@@ -18,7 +18,7 @@
 
 
 
-\## 2. 基础雷达参数
+## 2. 基础雷达参数
 
 
 
@@ -26,19 +26,19 @@
 
 
 
-\* Carrier frequency：76.3 GHz
+* Carrier frequency：76.3 GHz
 
-\* FMCW bandwidth：300 MHz
+* FMCW bandwidth：300 MHz
 
-\* Chirp duration：43 us
+* Chirp duration：43 us
 
-\* Chirp period：48 us
+* Chirp period：48 us
 
-\* ADC sample rate：25 MHz
+* ADC sample rate：25 MHz
 
-\* Samples per chirp：1024
+* Samples per chirp：1024
 
-\* Chirps per frame：256
+* Chirps per frame：256
 
 
 
@@ -46,9 +46,9 @@
 
 
 
-\* Initial range：30 m
+* Initial range：30 m
 
-\* Radial velocity：-5 m/s
+* Radial velocity：-5 m/s
 
 
 
@@ -56,9 +56,9 @@
 
 
 
-\* `v < 0`：目标靠近雷达
+* `v < 0`：目标靠近雷达
 
-\* `v > 0`：目标远离雷达
+* `v > 0`：目标远离雷达
 
 
 
@@ -66,7 +66,7 @@
 
 
 
-\## 3. LFMCW 信号仿真
+## 3. LFMCW 信号仿真
 
 
 
@@ -82,19 +82,19 @@
 
 LFMCW transmitted chirp
 
-&#x20;       ↓
+        ↓
 
 Propagation delay + Doppler
 
-&#x20;       ↓
+        ↓
 
 Target echo
 
-&#x20;       ↓
+        ↓
 
 Dechirp
 
-&#x20;       ↓
+        ↓
 
 Beat signal
 
@@ -106,13 +106,13 @@ Beat signal
 
 
 
-\* `lfmcw\_tx\_waveform.png`
+* `lfmcw_tx_waveform.png`
 
-\* `lfmcw\_target\_echo.png`
+* `lfmcw_target_echo.png`
 
-\* `lfmcw\_beat\_signal.png`
+* `lfmcw_beat_signal.png`
 
-\* `lfmcw\_tx\_spectrogram.png`
+* `lfmcw_tx_spectrogram.png`
 
 
 
@@ -120,7 +120,7 @@ Beat signal
 
 
 
-\## 4. Range-Doppler / 2D-FFT
+## 4. Range-Doppler / 2D-FFT
 
 
 
@@ -128,9 +128,9 @@ Beat signal
 
 
 
-1\. fast-time 方向进行 Range FFT；
+1. fast-time 方向进行 Range FFT；
 
-2\. slow-time chirp 方向进行 Doppler FFT。
+2. slow-time chirp 方向进行 Doppler FFT。
 
 
 
@@ -142,9 +142,9 @@ Beat signal
 
 
 
-\* `simulation\_range\_doppler\_before\_mti.png`
+* `simulation_range_doppler_before_mti.png`
 
-\* `simulation\_range\_doppler\_after\_mti.png`
+* `simulation_range_doppler_after_mti.png`
 
 
 
@@ -152,7 +152,7 @@ Beat signal
 
 
 
-\## 5. MTI
+## 5. MTI
 
 
 
@@ -166,7 +166,7 @@ MTI2：
 
 ```text
 
-y\[n] = x\[n] - x\[n-1]
+y[n] = x[n] - x[n-1]
 
 ```
 
@@ -178,7 +178,7 @@ MTI3：
 
 ```text
 
-y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
+y[n] = x[n] - 2x[n-1] + x[n-2]
 
 ```
 
@@ -192,11 +192,11 @@ MTI 可以明显削弱 slow-time 中变化较小的静态或近静态分量。
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
@@ -204,7 +204,7 @@ MTI 可以明显削弱 slow-time 中变化较小的静态或近静态分量。
 
 
 
-\## 6. LFM 频宽影响
+## 6. LFM 频宽影响
 
 
 
@@ -212,11 +212,11 @@ MTI 可以明显削弱 slow-time 中变化较小的静态或近静态分量。
 
 
 
-\* 150 MHz
+* 150 MHz
 
-\* 300 MHz
+* 300 MHz
 
-\* 450 MHz
+* 450 MHz
 
 
 
@@ -244,11 +244,11 @@ MTI 可以明显削弱 slow-time 中变化较小的静态或近静态分量。
 
 
 
-`parameter\_study/bandwidth\_study.png`
+`parameter_study/bandwidth_study.png`
 
 
 
-\## 7. LFM 时宽影响
+## 7. LFM 时宽影响
 
 
 
@@ -276,11 +276,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/chirp\_duration\_study.png`
+`parameter_study/chirp_duration_study.png`
 
 
 
-\## 8. 重频 / Chirp Period 影响
+## 8. 重频 / Chirp Period 影响
 
 
 
@@ -296,11 +296,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-`parameter\_study/prf\_study.png`
+`parameter_study/prf_study.png`
 
 
 
-\## 9. 目标数量影响
+## 9. 目标数量影响
 
 
 
@@ -308,11 +308,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-\* 1 个目标
+* 1 个目标
 
-\* 2 个目标
+* 2 个目标
 
-\* 3 个目标
+* 3 个目标
 
 
 
@@ -328,11 +328,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-`parameter\_study/target\_number\_study.png`
+`parameter_study/target_number_study.png`
 
 
 
-\## 10. 目标速度影响
+## 10. 目标速度影响
 
 
 
@@ -340,11 +340,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-\* -2 m/s
+* -2 m/s
 
-\* -5 m/s
+* -5 m/s
 
-\* -10 m/s
+* -10 m/s
 
 
 
@@ -356,11 +356,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-`parameter\_study/target\_velocity\_study.png`
+`parameter_study/target_velocity_study.png`
 
 
 
-\## 11. MTI 阶数影响
+## 11. MTI 阶数影响
 
 
 
@@ -368,11 +368,11 @@ Chirp period 决定 slow-time 采样周期，也决定 PRF，因此会影响 Dop
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
@@ -388,11 +388,11 @@ MTI3 对近零 Doppler 分量的抑制比 MTI2 更强，但其滤波作用也更
 
 
 
-`parameter\_study/mti\_order\_study.png`
+`parameter_study/mti_order_study.png`
 
 
 
-\## 12. 结果说明
+## 12. 结果说明
 
 
 
@@ -404,4 +404,4 @@ MTI3 对近零 Doppler 分量的抑制比 MTI2 更强，但其滤波作用也更
 
 
 
-CTSAI-A100 实测数据分析和仿真结果的差异在 `SIMULATION\_VS\_MEASUREMENT.md` 中单独说明。
+CTSAI-A100 实测数据分析和仿真结果的差异在 `SIMULATION_VS_MEASUREMENT.md` 中单独说明。
