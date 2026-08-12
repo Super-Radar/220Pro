@@ -1,8 +1,8 @@
-\# MATLAB LFMCW 综合仿真与参数实验
+# MATLAB LFMCW 综合仿真与参数实验
 
 
 
-\## 1. 仿真目的
+## 1. 仿真目的
 
 
 
@@ -14,7 +14,7 @@
 
 
 
-\## 2. 基础仿真参数
+## 2. 基础仿真参数
 
 
 
@@ -22,19 +22,19 @@
 
 
 
-\* Carrier frequency：76.3 GHz
+* Carrier frequency：76.3 GHz
 
-\* FMCW bandwidth：300 MHz
+* FMCW bandwidth：300 MHz
 
-\* Chirp duration：43 us
+* Chirp duration：43 us
 
-\* Chirp period：48 us
+* Chirp period：48 us
 
-\* ADC sample rate：25 MHz
+* ADC sample rate：25 MHz
 
-\* Samples per chirp：1024
+* Samples per chirp：1024
 
-\* Chirps per frame：256
+* Chirps per frame：256
 
 
 
@@ -42,9 +42,9 @@
 
 
 
-\* Initial range：30 m
+* Initial range：30 m
 
-\* Radial velocity：-5 m/s
+* Radial velocity：-5 m/s
 
 
 
@@ -66,7 +66,7 @@ v > 0 : receding
 
 
 
-\## 3. LFMCW 信号链
+## 3. LFMCW 信号链
 
 
 
@@ -78,35 +78,35 @@ v > 0 : receding
 
 LFMCW transmitted chirp
 
-&#x20;       ↓
+        ↓
 
 Propagation delay
 
-&#x20;       ↓
+        ↓
 
 Moving-target Doppler
 
-&#x20;       ↓
+        ↓
 
 Target echo
 
-&#x20;       ↓
+        ↓
 
 Dechirp
 
-&#x20;       ↓
+        ↓
 
 Beat signal
 
-&#x20;       ↓
+        ↓
 
 Range FFT
 
-&#x20;       ↓
+        ↓
 
 Doppler FFT
 
-&#x20;       ↓
+        ↓
 
 Range-Doppler Map
 
@@ -114,7 +114,7 @@ Range-Doppler Map
 
 
 
-\## 4. 发射信号、回波与差频信号
+## 4. 发射信号、回波与差频信号
 
 
 
@@ -122,13 +122,13 @@ Range-Doppler Map
 
 
 
-\* `lfmcw\_tx\_waveform.png`
+* `lfmcw_tx_waveform.png`
 
-\* `lfmcw\_target\_echo.png`
+* `lfmcw_target_echo.png`
 
-\* `lfmcw\_beat\_signal.png`
+* `lfmcw_beat_signal.png`
 
-\* `lfmcw\_tx\_spectrogram.png`
+* `lfmcw_tx_spectrogram.png`
 
 
 
@@ -136,7 +136,7 @@ Range-Doppler Map
 
 
 
-\## 5. Range-Doppler / 2D-FFT
+## 5. Range-Doppler / 2D-FFT
 
 
 
@@ -148,9 +148,9 @@ Range-Doppler Map
 
 
 
-\* `simulation\_range\_doppler\_before\_mti.png`
+* `simulation_range_doppler_before_mti.png`
 
-\* `simulation\_range\_doppler\_after\_mti.png`
+* `simulation_range_doppler_after_mti.png`
 
 
 
@@ -158,7 +158,7 @@ Range-Doppler Map
 
 
 
-\## 6. MTI
+## 6. MTI
 
 
 
@@ -172,7 +172,7 @@ MTI2：
 
 ```text
 
-y\[n] = x\[n] - x\[n-1]
+y[n] = x[n] - x[n-1]
 
 ```
 
@@ -184,7 +184,7 @@ MTI3：
 
 ```text
 
-y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
+y[n] = x[n] - 2x[n-1] + x[n-2]
 
 ```
 
@@ -194,15 +194,15 @@ y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
-\## 7. LFM 频宽实验
+## 7. LFM 频宽实验
 
 
 
@@ -210,11 +210,11 @@ y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
 
 
 
-\* 150 MHz
+* 150 MHz
 
-\* 300 MHz
+* 300 MHz
 
-\* 450 MHz
+* 450 MHz
 
 
 
@@ -238,11 +238,11 @@ y\[n] = x\[n] - 2x\[n-1] + x\[n-2]
 
 
 
-`parameter\_study/bandwidth\_study.png`
+`parameter_study/bandwidth_study.png`
 
 
 
-\## 8. LFM 时宽实验
+## 8. LFM 时宽实验
 
 
 
@@ -270,11 +270,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/chirp\_duration\_study.png`
+`parameter_study/chirp_duration_study.png`
 
 
 
-\## 9. Chirp Period / PRF 实验
+## 9. Chirp Period / PRF 实验
 
 
 
@@ -290,11 +290,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/prf\_study.png`
+`parameter_study/prf_study.png`
 
 
 
-\## 10. 目标数量实验
+## 10. 目标数量实验
 
 
 
@@ -302,11 +302,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-\* 1 个目标
+* 1 个目标
 
-\* 2 个目标
+* 2 个目标
 
-\* 3 个目标
+* 3 个目标
 
 
 
@@ -322,11 +322,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/target\_number\_study.png`
+`parameter_study/target_number_study.png`
 
 
 
-\## 11. 目标速度实验
+## 11. 目标速度实验
 
 
 
@@ -334,11 +334,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-\* -2 m/s
+* -2 m/s
 
-\* -5 m/s
+* -5 m/s
 
-\* -10 m/s
+* -10 m/s
 
 
 
@@ -350,11 +350,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/target\_velocity\_study.png`
+`parameter_study/target_velocity_study.png`
 
 
 
-\## 12. MTI 阶数实验
+## 12. MTI 阶数实验
 
 
 
@@ -362,11 +362,11 @@ chirp slope = bandwidth / chirp duration
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
@@ -374,7 +374,7 @@ chirp slope = bandwidth / chirp duration
 
 
 
-`parameter\_study/mti\_order\_study.png`
+`parameter_study/mti_order_study.png`
 
 
 
@@ -386,7 +386,7 @@ MTI3 的近零 Doppler 抑制作用通常更加明显，同时其滤波作用也
 
 
 
-\## 13. 结果使用边界
+## 13. 结果使用边界
 
 
 
@@ -402,7 +402,7 @@ MTI3 的近零 Doppler 抑制作用通常更加明显，同时其滤波作用也
 
 
 
-实测结果与仿真结果的差异在 `SIMULATION\_VS\_MEASUREMENT.md` 中单独说明。
+实测结果与仿真结果的差异在 `SIMULATION_VS_MEASUREMENT.md` 中单独说明。
 
 
 

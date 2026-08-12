@@ -1,8 +1,8 @@
-\# CTSAI-A100 室内 / 室外场景实测与 LFMCW 雷达综合仿真
+# CTSAI-A100 室内 / 室外场景实测与 LFMCW 雷达综合仿真
 
 
 
-本项目基于 \*\*CTSAI-A100\*\*，针对室内与室外环境开展 ADC 实测数据分析，并结合 MATLAB 建立 LFMCW 雷达综合仿真。
+本项目基于 **CTSAI-A100**，针对室内与室外环境开展 ADC 实测数据分析，并结合 MATLAB 建立 LFMCW 雷达综合仿真。
 
 
 
@@ -10,29 +10,29 @@
 
 
 
-\* CTSAI-A100 ADC TXT 数据解析
+* CTSAI-A100 ADC TXT 数据解析
 
-\* Range FFT
+* Range FFT
 
-\* Range-Doppler / 2D-FFT
+* Range-Doppler / 2D-FFT
 
-\* MTI 静态及近静态杂波抑制
+* MTI 静态及近静态杂波抑制
 
-\* 室内 / 室外代表场景结果展示
+* 室内 / 室外代表场景结果展示
 
-\* MATLAB LFMCW 发射信号仿真
+* MATLAB LFMCW 发射信号仿真
 
-\* 运动目标回波与差频信号
+* 运动目标回波与差频信号
 
-\* LFM 时频分析
+* LFM 时频分析
 
-\* 仿真 Range-Doppler
+* 仿真 Range-Doppler
 
-\* MTI 前后对比
+* MTI 前后对比
 
-\* LFM 频宽、时宽、PRF、目标数量、目标速度和 MTI 阶数参数实验
+* LFM 频宽、时宽、PRF、目标数量、目标速度和 MTI 阶数参数实验
 
-\* MATLAB 仿真与 CTSAI-A100 实测结果对比
+* MATLAB 仿真与 CTSAI-A100 实测结果对比
 
 
 
@@ -40,11 +40,8 @@
 
 
 
-\---
-
-
-
-\## 1. 项目目标
+---
+## 1. 项目目标
 
 
 
@@ -52,49 +49,46 @@
 
 
 
-1\. 采集并解析室内、室外场景 ADC 数据；
+1. 采集并解析室内、室外场景 ADC 数据；
 
-2\. 对实测 ADC 数据进行 Range FFT；
+2. 对实测 ADC 数据进行 Range FFT；
 
-3\. 进行 Range-Doppler / 2D-FFT 处理；
+3. 进行 Range-Doppler / 2D-FFT 处理；
 
-4\. 对比 MTI 处理前后的静态背景；
+4. 对比 MTI 处理前后的静态背景；
 
-5\. 建立 MATLAB LFMCW 综合仿真；
+5. 建立 MATLAB LFMCW 综合仿真；
 
-6\. 生成发射 LFM chirp；
+6. 生成发射 LFM chirp；
 
-7\. 模拟目标传播时延及 Doppler；
+7. 模拟目标传播时延及 Doppler；
 
-8\. 生成目标回波和差频信号；
+8. 生成目标回波和差频信号；
 
-9\. 生成 LFM 时频图；
+9. 生成 LFM 时频图；
 
-10\. 研究 LFM 频宽、时宽、PRF、目标数量、目标速度及 MTI 阶数变化；
+10. 研究 LFM 频宽、时宽、PRF、目标数量、目标速度及 MTI 阶数变化；
 
-11\. 对理想仿真和真实室内 / 室外实测结果进行比较。
-
-
-
-\---
+11. 对理想仿真和真实室内 / 室外实测结果进行比较。
 
 
 
-\## 2. 开发环境
+---
+## 2. 开发环境
 
 
 
-\* Radar：CTSAI-A100
+* Radar：CTSAI-A100
 
-\* Operating System：Windows
+* Operating System：Windows
 
-\* MATLAB：2024b
+* MATLAB：2024b
 
-\* Data：ADC TXT
+* Data：ADC TXT
 
-\* Profile：Pf0
+* Profile：Pf0
 
-\* Receive channels：Rx0-Rx3
+* Receive channels：Rx0-Rx3
 
 
 
@@ -132,19 +126,16 @@
 
 
 
-\* Range resolution：约 `0.5245 m/bin`
+* Range resolution：约 `0.5245 m/bin`
 
-\* Velocity resolution：约 `0.1599 m/s/bin`
+* Velocity resolution：约 `0.1599 m/s/bin`
 
-\* 当前处理对应的无模糊速度范围：约 `±20.46 m/s`
-
-
-
-\---
+* 当前处理对应的无模糊速度范围：约 `±20.46 m/s`
 
 
 
-\## 3. 项目目录
+---
+## 3. 项目目录
 
 
 
@@ -160,9 +151,9 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 ├── config/
 
-│   ├── sensor\_config\_init0.hxx
+│   ├── sensor_config_init0.hxx
 
-│   └── simulation\_config.m
+│   └── simulation_config.m
 
 │
 
@@ -172,13 +163,13 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 │   └── measured/
 
-│       ├── indoor\_case\_01/
+│       ├── indoor_case_01/
 
-│       ├── indoor\_case\_02/
+│       ├── indoor_case_02/
 
-│       ├── indoor\_case\_03/
+│       ├── indoor_case_03/
 
-│       └── outdoor\_case\_01/
+│       └── outdoor_case_01/
 
 │
 
@@ -194,11 +185,11 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 ├── docs/
 
-│   ├── SCENE\_AND\_ACQUISITION.md
+│   ├── SCENE_AND_ACQUISITION.md
 
-│   ├── LFMCW\_SIMULATION.md
+│   ├── LFMCW_SIMULATION.md
 
-│   └── SIMULATION\_VS\_MEASUREMENT.md
+│   └── SIMULATION_VS_MEASUREMENT.md
 
 │
 
@@ -208,7 +199,7 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 │   └── simulation/
 
-│       └── parameter\_study/
+│       └── parameter_study/
 
 │
 
@@ -218,33 +209,25 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 
 
-\---
+---
+## 4. 实测数据
+
+完整实验共包含四组实测数据：
+
+| 数据组               | 场景说明                               |
+| ----------------- | ---------------------------------- |
+| `indoor_case_01`  | 室内场景，被试者在雷达观测区域内左右移动               |
+| `indoor_case_02`  | 室内场景，被试者坐在椅子上；采集开始阶段有小幅动作，后半段保持静止  |
+| `indoor_case_03`  | 室内空旷静态场景，全程未人为设置运动目标               |
+| `outdoor_case_01` | 室外自然环境场景，用于观察室外背景杂波、环境反射及可能存在的运动响应 |
+
+各场景的现场照片、目标状态、运动方式以及实验信息边界详见：
+
+`docs/SCENE_AND_ACQUISITION.md`
 
 
 
-\## 4. 实测数据
-
-
-
-完整实验共包含四组数据：
-
-
-
-\* `indoor\_case\_01`
-
-\* `indoor\_case\_02`
-
-\* `indoor\_case\_03`
-
-\* `outdoor\_case\_01`
-
-
-
-三个 indoor case 表示三组独立室内采集数据。当前项目不在缺少额外实验布置信息的情况下对三个室内 case 的具体差异作额外假设。
-
-
-
-\### 完整数据规模
+### 完整数据规模
 
 
 
@@ -252,11 +235,11 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 
 
-\* 20 个 run
+* 20 个 run
 
-\* 每个 run 包含 Rx0-Rx3
+* 每个 run 包含 Rx0-Rx3
 
-\* 80 个 ADC TXT 文件 / scene
+* 80 个 ADC TXT 文件 / scene
 
 
 
@@ -286,11 +269,8 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 
 
-\---
-
-
-
-\## 5. 仓库中的代表数据
+---
+## 5. 仓库中的代表数据
 
 
 
@@ -298,7 +278,7 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 
 
-仓库为每个场景提供 `run\_001`：
+仓库为每个场景提供 `run_001`：
 
 
 
@@ -306,21 +286,21 @@ community/projects/a100-indoor-outdoor-radar-analysis/
 
 data/measured/
 
-├── indoor\_case\_01/
+├── indoor_case_01/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-├── indoor\_case\_02/
+├── indoor_case_02/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-├── indoor\_case\_03/
+├── indoor_case_03/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-└── outdoor\_case\_01/
+└── outdoor_case_01/
 
-&#x20;   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+    └── run_001_Pf0_Rx0~Rx3.txt
 
 ```
 
@@ -348,11 +328,8 @@ data/measured/
 
 
 
-\---
-
-
-
-\## 6. ADC 数据检查
+---
+## 6. ADC 数据检查
 
 
 
@@ -364,13 +341,13 @@ data/measured/
 
 
 
-\* Rx index：`0, 1, 2, 3`
+* Rx index：`0, 1, 2, 3`
 
-\* Samples per chirp：`1024`
+* Samples per chirp：`1024`
 
-\* Chirps per frame：`256`
+* Chirps per frame：`256`
 
-\* ADC payload 可完整解析
+* ADC payload 可完整解析
 
 
 
@@ -382,15 +359,12 @@ data/measured/
 
 
 
-\---
+---
+## 7. 实测处理流程
 
 
 
-\## 7. 实测处理流程
-
-
-
-项目对四个场景分别选择 `run\_001\_Pf0\_Rx0.txt` 作为代表性实测样本。
+项目对四个场景分别选择 `run_001_Pf0_Rx0.txt` 作为代表性实测样本。
 
 
 
@@ -402,35 +376,35 @@ data/measured/
 
 CTSAI-A100 ADC TXT
 
-&#x20;       ↓
+        ↓
 
 ADC TXT parsing
 
-&#x20;       ↓
+        ↓
 
 Packed uint32 unpacking
 
-&#x20;       ↓
+        ↓
 
 Fast-time DC removal
 
-&#x20;       ↓
+        ↓
 
 Range FFT
 
-&#x20;       ↓
+        ↓
 
 Range-slow-time data
 
-&#x20;       ↓
+        ↓
 
 MTI2
 
-&#x20;       ↓
+        ↓
 
 Doppler FFT
 
-&#x20;       ↓
+        ↓
 
 Range-Doppler Map
 
@@ -446,11 +420,8 @@ Doppler FFT 和 MTI 使用同一帧内部的 256 个 slow-time chirps。
 
 
 
-\---
-
-
-
-\## 8. 实测 Range Spectrum
+---
+## 8. 实测 Range Spectrum
 
 
 
@@ -460,13 +431,13 @@ Doppler FFT 和 MTI 使用同一帧内部的 256 个 slow-time chirps。
 
 ```text
 
-results/measured/indoor\_case\_01/range\_spectrum.png
+results/measured/indoor_case_01/range_spectrum.png
 
-results/measured/indoor\_case\_02/range\_spectrum.png
+results/measured/indoor_case_02/range_spectrum.png
 
-results/measured/indoor\_case\_03/range\_spectrum.png
+results/measured/indoor_case_03/range_spectrum.png
 
-results/measured/outdoor\_case\_01/range\_spectrum.png
+results/measured/outdoor_case_01/range_spectrum.png
 
 ```
 
@@ -476,11 +447,8 @@ results/measured/outdoor\_case\_01/range\_spectrum.png
 
 
 
-\---
-
-
-
-\## 9. 实测 Range-Doppler / 2D-FFT
+---
+## 9. 实测 Range-Doppler / 2D-FFT
 
 
 
@@ -490,7 +458,7 @@ results/measured/outdoor\_case\_01/range\_spectrum.png
 
 ```text
 
-range\_doppler\_before\_mti.png
+range_doppler_before_mti.png
 
 ```
 
@@ -500,9 +468,9 @@ range\_doppler\_before\_mti.png
 
 
 
-\* Range：m
+* Range：m
 
-\* Radial Velocity：m/s
+* Radial Velocity：m/s
 
 
 
@@ -516,23 +484,20 @@ range\_doppler\_before\_mti.png
 
 ```text
 
-results/measured/indoor\_case\_01/
+results/measured/indoor_case_01/
 
-results/measured/indoor\_case\_02/
+results/measured/indoor_case_02/
 
-results/measured/indoor\_case\_03/
+results/measured/indoor_case_03/
 
-results/measured/outdoor\_case\_01/
+results/measured/outdoor_case_01/
 
 ```
 
 
 
-\---
-
-
-
-\## 10. 实测 MTI
+---
+## 10. 实测 MTI
 
 
 
@@ -542,7 +507,7 @@ results/measured/outdoor\_case\_01/
 
 ```text
 
-y\[n] = x\[n] - x\[n-1]
+y[n] = x[n] - x[n-1]
 
 ```
 
@@ -554,9 +519,9 @@ y\[n] = x\[n] - x\[n-1]
 
 ```text
 
-range\_doppler\_before\_mti.png
+range_doppler_before_mti.png
 
-range\_doppler\_after\_mti2.png
+range_doppler_after_mti2.png
 
 ```
 
@@ -570,11 +535,8 @@ MTI 主要用于削弱 slow-time 中变化较小的静态及近静态分量。
 
 
 
-\---
-
-
-
-\## 11. 室内 / 室外场景
+---
+## 11. 室内 / 室外场景
 
 
 
@@ -602,15 +564,12 @@ MTI 主要用于削弱 slow-time 中变化较小的静态及近静态分量。
 
 
 
-`docs/SCENE\_AND\_ACQUISITION.md`
+`docs/SCENE_AND_ACQUISITION.md`
 
 
 
-\---
-
-
-
-\## 12. MATLAB LFMCW 综合仿真
+---
+## 12. MATLAB LFMCW 综合仿真
 
 
 
@@ -622,17 +581,17 @@ MTI 主要用于削弱 slow-time 中变化较小的静态及近静态分量。
 
 
 
-\* Carrier frequency：76.3 GHz
+* Carrier frequency：76.3 GHz
 
-\* Bandwidth：300 MHz
+* Bandwidth：300 MHz
 
-\* Chirp duration：43 us
+* Chirp duration：43 us
 
-\* Chirp period：48 us
+* Chirp period：48 us
 
-\* Target initial range：30 m
+* Target initial range：30 m
 
-\* Target radial velocity：-5 m/s
+* Target radial velocity：-5 m/s
 
 
 
@@ -658,35 +617,35 @@ v > 0 : receding
 
 LFMCW transmitted chirp
 
-&#x20;       ↓
+        ↓
 
 Propagation delay
 
-&#x20;       ↓
+        ↓
 
 Doppler phase
 
-&#x20;       ↓
+        ↓
 
 Target echo
 
-&#x20;       ↓
+        ↓
 
 Dechirp
 
-&#x20;       ↓
+        ↓
 
 Beat signal
 
-&#x20;       ↓
+        ↓
 
 Range FFT
 
-&#x20;       ↓
+        ↓
 
 Doppler FFT
 
-&#x20;       ↓
+        ↓
 
 Range-Doppler Map
 
@@ -694,11 +653,8 @@ Range-Doppler Map
 
 
 
-\---
-
-
-
-\## 13. LFMCW 发射信号、回波和差频信号
+---
+## 13. LFMCW 发射信号、回波和差频信号
 
 
 
@@ -706,35 +662,35 @@ Range-Doppler Map
 
 
 
-\### 发射信号
+### 发射信号
 
 
 
-`results/simulation/lfmcw\_tx\_waveform.png`
+`results/simulation/lfmcw_tx_waveform.png`
 
 
 
-\### 目标回波
+### 目标回波
 
 
 
-`results/simulation/lfmcw\_target\_echo.png`
+`results/simulation/lfmcw_target_echo.png`
 
 
 
-\### 差频信号
+### 差频信号
 
 
 
-`results/simulation/lfmcw\_beat\_signal.png`
+`results/simulation/lfmcw_beat_signal.png`
 
 
 
-\### 时频图
+### 时频图
 
 
 
-`results/simulation/lfmcw\_tx\_spectrogram.png`
+`results/simulation/lfmcw_tx_spectrogram.png`
 
 
 
@@ -742,11 +698,8 @@ Range-Doppler Map
 
 
 
-\---
-
-
-
-\## 14. 仿真 Range-Doppler 与 MTI
+---
+## 14. 仿真 Range-Doppler 与 MTI
 
 
 
@@ -754,11 +707,11 @@ Range-Doppler Map
 
 
 
-\* 运动目标
+* 运动目标
 
-\* 多个静态反射体
+* 多个静态反射体
 
-\* 复高斯噪声
+* 复高斯噪声
 
 
 
@@ -768,9 +721,9 @@ Range-Doppler Map
 
 ```text
 
-results/simulation/simulation\_range\_doppler\_before\_mti.png
+results/simulation/simulation_range_doppler_before_mti.png
 
-results/simulation/simulation\_range\_doppler\_after\_mti.png
+results/simulation/simulation_range_doppler_after_mti.png
 
 ```
 
@@ -784,11 +737,8 @@ results/simulation/simulation\_range\_doppler\_after\_mti.png
 
 
 
-\---
-
-
-
-\## 15. 参数影响实验
+---
+## 15. 参数影响实验
 
 
 
@@ -798,13 +748,13 @@ results/simulation/simulation\_range\_doppler\_after\_mti.png
 
 ```text
 
-results/simulation/parameter\_study/
+results/simulation/parameter_study/
 
 ```
 
 
 
-\### LFM 频宽
+### LFM 频宽
 
 
 
@@ -812,11 +762,11 @@ results/simulation/parameter\_study/
 
 
 
-\* 150 MHz
+* 150 MHz
 
-\* 300 MHz
+* 300 MHz
 
-\* 450 MHz
+* 450 MHz
 
 
 
@@ -824,7 +774,7 @@ results/simulation/parameter\_study/
 
 
 
-`bandwidth\_study.png`
+`bandwidth_study.png`
 
 
 
@@ -832,7 +782,7 @@ results/simulation/parameter\_study/
 
 
 
-\### LFM 时宽
+### LFM 时宽
 
 
 
@@ -844,7 +794,7 @@ results/simulation/parameter\_study/
 
 
 
-`chirp\_duration\_study.png`
+`chirp_duration_study.png`
 
 
 
@@ -852,7 +802,7 @@ results/simulation/parameter\_study/
 
 
 
-\### Chirp Period / PRF
+### Chirp Period / PRF
 
 
 
@@ -860,7 +810,7 @@ results/simulation/parameter\_study/
 
 
 
-`prf\_study.png`
+`prf_study.png`
 
 
 
@@ -868,7 +818,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\### 目标数量
+### 目标数量
 
 
 
@@ -876,11 +826,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\* 1 target
+* 1 target
 
-\* 2 targets
+* 2 targets
 
-\* 3 targets
+* 3 targets
 
 
 
@@ -888,7 +838,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-`target\_number\_study.png`
+`target_number_study.png`
 
 
 
@@ -896,7 +846,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\### 目标速度
+### 目标速度
 
 
 
@@ -904,11 +854,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\* -2 m/s
+* -2 m/s
 
-\* -5 m/s
+* -5 m/s
 
-\* -10 m/s
+* -10 m/s
 
 
 
@@ -916,7 +866,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-`target\_velocity\_study.png`
+`target_velocity_study.png`
 
 
 
@@ -924,7 +874,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\### MTI 阶数
+### MTI 阶数
 
 
 
@@ -932,11 +882,11 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-\* Before MTI
+* Before MTI
 
-\* MTI2
+* MTI2
 
-\* MTI3
+* MTI3
 
 
 
@@ -944,7 +894,7 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-`mti\_order\_study.png`
+`mti_order_study.png`
 
 
 
@@ -956,15 +906,12 @@ Chirp period 改变 slow-time 采样率和 PRF，因此影响 Doppler 采样及�
 
 
 
-`docs/LFMCW\_SIMULATION.md`
+`docs/LFMCW_SIMULATION.md`
 
 
 
-\---
-
-
-
-\## 16. MATLAB 仿真与 CTSAI-A100 实测对比
+---
+## 16. MATLAB 仿真与 CTSAI-A100 实测对比
 
 
 
@@ -972,15 +919,15 @@ MATLAB 仿真使用：
 
 
 
-\* 理想化目标模型
+* 理想化目标模型
 
-\* 已知距离
+* 已知距离
 
-\* 已知径向速度
+* 已知径向速度
 
-\* 可控静态杂波
+* 可控静态杂波
 
-\* 可控噪声
+* 可控噪声
 
 
 
@@ -988,15 +935,15 @@ MATLAB 仿真使用：
 
 
 
-\* 真实环境固定反射
+* 真实环境固定反射
 
-\* 多径传播
+* 多径传播
 
-\* 实际系统噪声
+* 实际系统噪声
 
-\* 不同散射表面
+* 不同散射表面
 
-\* 复杂室内 / 室外传播环境
+* 复杂室内 / 室外传播环境
 
 
 
@@ -1016,15 +963,12 @@ MATLAB 仿真使用：
 
 
 
-`docs/SIMULATION\_VS\_MEASUREMENT.md`
+`docs/SIMULATION_VS_MEASUREMENT.md`
 
 
 
-\---
-
-
-
-\## 17. 如何运行
+---
+## 17. 如何运行
 
 
 
@@ -1090,67 +1034,61 @@ All Issue #8 experiments completed successfully.
 
 
 
-\---
+---
+## 18. 单独运行
 
 
 
-\## 18. 单独运行
-
-
-
-\### 数据检查
-
-
-
-```matlab
-
-run('tests/inspect\_measured\_dataset.m')
-
-```
-
-
-
-\### 实测室内 / 室外分析
+### 数据检查
 
 
 
 ```matlab
 
-run('tests/run\_measured\_scene\_analysis.m')
+run('tests/inspect_measured_dataset.m')
 
 ```
 
 
 
-\### LFMCW 综合仿真
+### 实测室内 / 室外分析
 
 
 
 ```matlab
 
-run('tests/run\_lfmcw\_simulation.m')
+run('tests/run_measured_scene_analysis.m')
 
 ```
 
 
 
-\### 参数实验
+### LFMCW 综合仿真
 
 
 
 ```matlab
 
-run('tests/run\_parameter\_studies.m')
+run('tests/run_lfmcw_simulation.m')
 
 ```
 
 
 
-\---
+### 参数实验
 
 
 
-\## 19. 结果目录
+```matlab
+
+run('tests/run_parameter_studies.m')
+
+```
+
+
+
+---
+## 19. 结果目录
 
 
 
@@ -1184,7 +1122,7 @@ results/simulation/
 
 ```text
 
-results/simulation/parameter\_study/
+results/simulation/parameter_study/
 
 ```
 
@@ -1194,11 +1132,8 @@ results/simulation/parameter\_study/
 
 
 
-\---
-
-
-
-\## 20. 数据和结果使用边界
+---
+## 20. 数据和结果使用边界
 
 
 
@@ -1206,11 +1141,11 @@ results/simulation/parameter\_study/
 
 
 
-1\. MATLAB 理想化仿真结果；
+1. MATLAB 理想化仿真结果；
 
-2\. CTSAI-A100 ADC 实测结果；
+2. CTSAI-A100 ADC 实测结果；
 
-3\. CTSAI-A100 产品实际最终能力。
+3. CTSAI-A100 产品实际最终能力。
 
 
 
@@ -1230,65 +1165,56 @@ MATLAB 仿真用于研究理想化 LFMCW 雷达规律。
 
 
 
-\---
+---
+## 21. 文档
 
 
 
-\## 21. 文档
+* `docs/SCENE_AND_ACQUISITION.md`
 
 
 
-\* `docs/SCENE\_AND\_ACQUISITION.md`
+  * 场景、数据规模和数据采集说明
 
 
 
-&#x20; \* 场景、数据规模和数据采集说明
+* `docs/LFMCW_SIMULATION.md`
 
 
 
-\* `docs/LFMCW\_SIMULATION.md`
+  * LFMCW、2D-FFT、MTI 和参数实验
 
 
 
-&#x20; \* LFMCW、2D-FFT、MTI 和参数实验
+* `docs/SIMULATION_VS_MEASUREMENT.md`
 
 
 
-\* `docs/SIMULATION\_VS\_MEASUREMENT.md`
+  * MATLAB 仿真与 CTSAI-A100 实测结果对比
 
 
 
-&#x20; \* MATLAB 仿真与 CTSAI-A100 实测结果对比
+* `data/README.md`
 
 
 
-\* `data/README.md`
+  * 完整数据规模及仓库代表数据说明
 
 
 
-&#x20; \* 完整数据规模及仓库代表数据说明
+---
+## 22. 作者
 
 
 
-\---
+* Author / Team：HuangTao
+
+* GitHub：@Zzht999
 
 
 
-\## 22. 作者
-
-
-
-\* Author / Team：HuangTao
-
-\* GitHub：@Zzht999
-
-
-
-\---
-
-
-
-\## 23. Issue
+---
+## 23. Issue
 
 
 

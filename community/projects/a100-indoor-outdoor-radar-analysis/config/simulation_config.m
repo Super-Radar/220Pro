@@ -1,5 +1,5 @@
 function cfg = simulation_config()
-%SIMULATION_CONFIG Configuration for Issue #13 LFMCW simulation.
+%SIMULATION_CONFIG Configuration for Issue #8 LFMCW simulation.
 %
 % Velocity convention used in the simulation:
 %   v > 0 : receding

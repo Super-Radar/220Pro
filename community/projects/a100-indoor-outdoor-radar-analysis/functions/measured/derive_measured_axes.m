@@ -1,7 +1,7 @@
 function axesInfo = derive_measured_axes(cfg, numSamples, numChirps)
 %DERIVE_MEASURED_AXES Build physical range and velocity axes.
 %
-% This helper is used by the CTSAI-A100 Issue #13 measured-data analysis.
+% This helper is used by the CTSAI-A100 Issue #8 measured-data analysis.
 %
 % Inputs:
 %   cfg         Parsed CTSAI-A100 sensor configuration.
@@ -50,7 +50,7 @@ end
 
 mimo = decode_tx_groups(cfg, 4);
 
-% The current Issue #13 baseline directly Doppler-processes all 256
+% The current Issue #8 baseline directly Doppler-processes all 256
 % chirps of one RX file. This is valid for the current SISO profile.
 if mimo.group_count ~= 1
     error(['This measured-data baseline currently expects one TX chirp ' ...

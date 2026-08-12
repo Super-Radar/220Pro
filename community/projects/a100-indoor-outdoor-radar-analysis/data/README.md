@@ -1,8 +1,8 @@
-\# CTSAI-A100 Indoor / Outdoor ADC Dataset
+# CTSAI-A100 Indoor / Outdoor ADC Dataset
 
 
 
-\## Dataset Overview
+## Dataset Overview
 
 
 
@@ -14,13 +14,13 @@
 
 
 
-\* `indoor\_case\_01`
+* `indoor_case_01`
 
-\* `indoor\_case\_02`
+* `indoor_case_02`
 
-\* `indoor\_case\_03`
+* `indoor_case_03`
 
-\* `outdoor\_case\_01`
+* `outdoor_case_01`
 
 
 
@@ -32,15 +32,15 @@
 
 
 
-\* 20 runs / scene
+* 20 runs / scene
 
-\* 4 RX files / run
+* 4 RX files / run
 
-\* 80 TXT files / scene
+* 80 TXT files / scene
 
-\* 4 scenes
+* 4 scenes
 
-\* 共 320 个 ADC TXT 文件
+* 共 320 个 ADC TXT 文件
 
 
 
@@ -48,7 +48,7 @@
 
 
 
-\## Repository Sample Data
+## Repository Sample Data
 
 
 
@@ -56,7 +56,7 @@
 
 
 
-仓库中为每个场景提供 `run\_001` 作为可复现实验的代表样本：
+仓库中为每个场景提供 `run_001` 作为可复现实验的代表样本：
 
 
 
@@ -64,21 +64,21 @@
 
 measured/
 
-├── indoor\_case\_01/
+├── indoor_case_01/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-├── indoor\_case\_02/
+├── indoor_case_02/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-├── indoor\_case\_03/
+├── indoor_case_03/
 
-│   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+│   └── run_001_Pf0_Rx0~Rx3.txt
 
-└── outdoor\_case\_01/
+└── outdoor_case_01/
 
-&#x20;   └── run\_001\_Pf0\_Rx0\~Rx3.txt
+    └── run_001_Pf0_Rx0~Rx3.txt
 
 ```
 
@@ -92,7 +92,7 @@ measured/
 
 
 
-\## Data Format
+## Data Format
 
 
 
@@ -100,13 +100,13 @@ measured/
 
 
 
-\* `Rx0`
+* `Rx0`
 
-\* `Rx1`
+* `Rx1`
 
-\* `Rx2`
+* `Rx2`
 
-\* `Rx3`
+* `Rx3`
 
 
 
@@ -118,7 +118,7 @@ measured/
 
 
 
-\## Using Your Own Data
+## Using Your Own Data
 
 
 
@@ -126,17 +126,17 @@ measured/
 
 
 
-1\. 按照相同格式准备 Rx0-Rx3 ADC TXT 文件；
+1. 按照相同格式准备 Rx0-Rx3 ADC TXT 文件；
 
-2\. 将数据放入对应场景目录；
+2. 将数据放入对应场景目录；
 
-3\. 确认 `config/sensor\_config\_init0.hxx` 与实际采集配置一致；
+3. 确认 `config/sensor_config_init0.hxx` 与实际采集配置一致；
 
-4\. 运行项目 `main.m` 或对应测试脚本。
+4. 运行项目 `main.m` 或对应测试脚本。
 
 
 
-\## Full Dataset Note
+## Full Dataset Note
 
 
 
@@ -148,11 +148,11 @@ measured/
 
 
 
-\* 完整实验采集规模；
+* 完整实验采集规模；
 
-\* 仓库中提供的代表性可复现数据；
+* 仓库中提供的代表性可复现数据；
 
-\* 基于代表数据生成的示例结果。
+* 基于代表数据生成的示例结果。
 
 
 
