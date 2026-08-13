@@ -1,0 +1,343 @@
+function metrics = analyze_measured_rx_file(filePath, cfg, opts)
+%ANALYZE_MEASURED_RX_FILE Analyze one CTSAI-A100 measured RX TXT file.
+%
+% The function performs:
+%
+%   ADC TXT
+%      -> unpack ADC
+%      -> Range FFT
+%      -> Doppler FFT
+%      -> MTI2
+%      -> strongest non-zero-Doppler peak
+%      -> positive / negative Doppler energy comparison
+%
+% The function operates on ONE RX file only.
+%
+% This is intentional because the Issue #13 ALL-channel acquisition
+% is relatively slow and Rx0-Rx3 should not automatically be treated
+% as perfectly synchronized snapshots of a moving vehicle.
+
+if nargin < 3
+    opts = struct();
+end
+
+if ~isfield(opts, 'zero_half_width_bins')
+    opts.zero_half_width_bins = 2;
+end
+
+if ~isfield(opts, 'range_guard_bins')
+    opts.range_guard_bins = 2;
+end
+
+if ~isfield(opts, 'allow_zero_pad')
+    opts.allow_zero_pad = false;
+end
+
+%% ------------------------------------------------------------
+% 1. Read ADC TXT
+%% ------------------------------------------------------------
+
+ioOpts.allow_zero_pad = opts.allow_zero_pad;
+
+[packedWords, header, trailer] = ...
+    read_adc_txt(filePath, ioOpts);
+
+%% ------------------------------------------------------------
+% 2. Unpack ADC
+%% ------------------------------------------------------------
+
+adc = unpack_uint32_adc( ...
+    packedWords, ...
+    header.samples_per_chirp, ...
+    header.chirp_count);
+
+adc = double(adc);
+
+numSamples = size(adc, 1);
+numChirps  = size(adc, 2);
+
+%% ------------------------------------------------------------
+% 3. Build physical axes
+%% ------------------------------------------------------------
+
+axesInfo = derive_measured_axes( ...
+    cfg, ...
+    numSamples, ...
+    numChirps);
+
+rangeAxisM = axesInfo.range_axis_m;
+velocityAxisMps = axesInfo.velocity_axis_mps;
+
+numRangeBins = numel(rangeAxisM);
+
+%% ------------------------------------------------------------
+% 4. Remove fast-time DC
+%% ------------------------------------------------------------
+
+adc = adc - mean(adc, 1);
+
+%% ------------------------------------------------------------
+% 5. Range FFT
+%% ------------------------------------------------------------
+
+rangeWindow = make_window('hann', numSamples);
+
+adcWindowed = adc .* ...
+    repmat(rangeWindow, 1, numChirps);
+
+rangeFftFull = fft( ...
+    adcWindowed, ...
+    numSamples, ...
+    1);
+
+rangeCube = ...
+    rangeFftFull(1:numRangeBins, :);
+
+%% ------------------------------------------------------------
+% 6. Doppler FFT before MTI
+%% ------------------------------------------------------------
+
+dopplerWindow = ...
+    make_window('hann', numChirps).';
+
+rangeWindowed = ...
+    rangeCube .* ...
+    repmat( ...
+        dopplerWindow, ...
+        numRangeBins, ...
+        1);
+
+rdBefore = fftshift( ...
+    fft( ...
+        rangeWindowed, ...
+        numChirps, ...
+        2), ...
+    2);
+
+rdBeforePower = abs(rdBefore).^2;
+
+%% ------------------------------------------------------------
+% 7. MTI2
+%% ------------------------------------------------------------
+
+rangeCube3D = reshape( ...
+    rangeCube, ...
+    numRangeBins, ...
+    numChirps, ...
+    1);
+
+clutterOpts = struct();
+
+clutterOpts.method = 'MTI2';
+clutterOpts.normalize_output_power = false;
+
+[rangeMti2, ~] = suppress_clutter( ...
+    rangeCube3D, ...
+    clutterOpts);
+
+rangeMti2 = reshape( ...
+    rangeMti2, ...
+    numRangeBins, ...
+    numChirps);
+
+rangeMti2Windowed = ...
+    rangeMti2 .* ...
+    repmat( ...
+        dopplerWindow, ...
+        numRangeBins, ...
+        1);
+
+rdMti2 = fftshift( ...
+    fft( ...
+        rangeMti2Windowed, ...
+        numChirps, ...
+        2), ...
+    2);
+
+rdMti2Power = abs(rdMti2).^2;
+
+%% ------------------------------------------------------------
+% 8. Zero-Doppler analysis band
+%% ------------------------------------------------------------
+
+zeroBin = floor(numChirps / 2) + 1;
+
+firstZeroBin = max( ...
+    1, ...
+    zeroBin - opts.zero_half_width_bins);
+
+lastZeroBin = min( ...
+    numChirps, ...
+    zeroBin + opts.zero_half_width_bins);
+
+zeroBand = firstZeroBin:lastZeroBin;
+
+zeroVelocityLimitMps = max( ...
+    abs(velocityAxisMps(zeroBand)));
+
+%% ------------------------------------------------------------
+% 9. MTI2 zero-Doppler suppression
+%% ------------------------------------------------------------
+
+zeroBefore = sum(sum( ...
+    rdBeforePower(:, zeroBand)));
+
+zeroAfterMti2 = sum(sum( ...
+    rdMti2Power(:, zeroBand)));
+
+mti2SuppressionDb = ...
+    10 * log10( ...
+        (zeroBefore + eps) / ...
+        (zeroAfterMti2 + eps));
+
+%% ------------------------------------------------------------
+% 10. Exclude very-near range bins for target peak search
+%
+% This avoids the first few bins being dominated by direct
+% coupling / near-range leakage.
+%
+% This is only an analysis guard region and does NOT mean that
+% ranges inside this region are physically invalid.
+%% ------------------------------------------------------------
+
+firstSearchRangeBin = ...
+    opts.range_guard_bins + 1;
+
+firstSearchRangeBin = min( ...
+    firstSearchRangeBin, ...
+    numRangeBins);
+
+rangeSearchMask = false( ...
+    numRangeBins, ...
+    1);
+
+rangeSearchMask( ...
+    firstSearchRangeBin:end) = true;
+
+%% ------------------------------------------------------------
+% 11. Exclude zero / near-zero Doppler for moving-target peak
+%% ------------------------------------------------------------
+
+movingVelocityMask = ...
+    abs(velocityAxisMps) > ...
+    zeroVelocityLimitMps;
+
+searchMask = ...
+    repmat( ...
+        rangeSearchMask, ...
+        1, ...
+        numChirps) & ...
+    repmat( ...
+        movingVelocityMask, ...
+        numRangeBins, ...
+        1);
+
+searchPower = rdMti2Power;
+
+searchPower(~searchMask) = -Inf;
+
+[peakPower, linearIndex] = ...
+    max(searchPower(:));
+
+[peakRangeBin, peakDopplerBin] = ...
+    ind2sub( ...
+        size(searchPower), ...
+        linearIndex);
+
+peakRangeM = ...
+    rangeAxisM(peakRangeBin);
+
+peakVelocityMps = ...
+    velocityAxisMps(peakDopplerBin);
+
+peakPowerDb = ...
+    10 * log10(peakPower + eps);
+
+%% ------------------------------------------------------------
+% 12. Positive / negative moving-Doppler energy
+%
+% These values are useful for determining the actual Doppler
+% sign convention from the measured approaching/receding data.
+%% ------------------------------------------------------------
+
+positiveVelocityMask = ...
+    velocityAxisMps > ...
+    zeroVelocityLimitMps;
+
+negativeVelocityMask = ...
+    velocityAxisMps < ...
+    -zeroVelocityLimitMps;
+
+validRangePower = ...
+    rdMti2Power(rangeSearchMask, :);
+
+positiveMovingEnergy = ...
+    sum(sum( ...
+        validRangePower(:, positiveVelocityMask)));
+
+negativeMovingEnergy = ...
+    sum(sum( ...
+        validRangePower(:, negativeVelocityMask)));
+
+positiveMovingEnergyDb = ...
+    10 * log10( ...
+        positiveMovingEnergy + eps);
+
+negativeMovingEnergyDb = ...
+    10 * log10( ...
+        negativeMovingEnergy + eps);
+
+positiveMinusNegativeDb = ...
+    10 * log10( ...
+        (positiveMovingEnergy + eps) / ...
+        (negativeMovingEnergy + eps));
+
+%% ------------------------------------------------------------
+% Output
+%% ------------------------------------------------------------
+
+metrics = struct();
+
+metrics.rx_index = header.rx_index;
+
+metrics.num_samples = numSamples;
+metrics.num_chirps = numChirps;
+metrics.trailer_values = numel(trailer);
+
+metrics.range_resolution_m = ...
+    axesInfo.range_resolution_m;
+
+metrics.velocity_resolution_mps = ...
+    axesInfo.velocity_resolution_mps;
+
+metrics.zero_velocity_limit_mps = ...
+    zeroVelocityLimitMps;
+
+metrics.mti2_zero_doppler_suppression_db = ...
+    mti2SuppressionDb;
+
+metrics.peak_range_bin = ...
+    peakRangeBin;
+
+metrics.peak_doppler_bin = ...
+    peakDopplerBin;
+
+metrics.peak_range_m = ...
+    peakRangeM;
+
+metrics.peak_velocity_mps = ...
+    peakVelocityMps;
+
+metrics.peak_power_db = ...
+    peakPowerDb;
+
+metrics.positive_moving_energy_db = ...
+    positiveMovingEnergyDb;
+
+metrics.negative_moving_energy_db = ...
+    negativeMovingEnergyDb;
+
+metrics.positive_minus_negative_db = ...
+    positiveMinusNegativeDb;
+
+end
