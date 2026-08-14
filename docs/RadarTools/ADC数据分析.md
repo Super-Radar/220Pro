@@ -54,7 +54,7 @@ cell_cfg_file_path = {
 
 ### 拷贝 ADC 数据
 
-将 RadarTools 采集到的 ADC 数据文件从以下目录：
+将 RadarTools 采集到的 ADC 数据文件或完整会话目录从以下位置：
 
 ```text
 RadarTools/RadarTools_Release/adcData/
@@ -66,7 +66,7 @@ RadarTools/RadarTools_Release/adcData/
 ADC数据采集/matlab_signal_processing_platform_231023_for_txt_A100/data/
 ```
 
-若数据包含多个接收通道，请确保所有通道文件均已拷贝完整。
+若数据包含多个接收通道，请确保所有通道文件均已拷贝完整。会话目录中的 `Pf0` 表示 profile，`Rx0`～`Rx3` 表示接收通道。
 
 ### 配置数据路径和文件名
 
@@ -90,6 +90,19 @@ cell_data_file_name_list = {
 ```
 
 文件名需与 `data/` 目录中的实际文件保持一致。
+
+### ADC 文件头与长度校验
+
+示例工程兼容两种 RadarTools 导出格式：
+
+```text
+旧版平铺格式：<ADC samples>,0
+会话目录格式：<Rx>,<Sample>,<Chirp_N>,<ADC samples>,0
+```
+
+会话目录格式开头的三项依次为接收通道、每 chirp 采样点数和 chirp 数量，不属于 ADC 样本。`load_adc_data.m` 会调用 `read_adc_capture_file.m` 自动移除文件头和可选的末尾零值，并检查文件头是否与所选波形配置一致。
+
+当文件长度不正确，或文件头中的 `Sample`、`Chirp_N` 与配置不一致时，程序会停止并报告错误。此时应核对采集 profile、配置文件和数据文件，不能通过补零或截断继续处理，否则会造成整个采样序列错位。
 
 ### 运行 Matlab 处理脚本
 
