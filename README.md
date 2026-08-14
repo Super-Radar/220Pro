@@ -120,9 +120,16 @@ SuperRadar 是由承泰科技发起并长期支持的开放毫米波感知技术
 
 除了官方提供的驱动、工具、示例和技术文档外，SuperRadar 也欢迎开发者基于 CTSAI-A100 开展自己的算法实验、数据分析和场景应用开发。
 
-社区项目统一收录在：
 
-[`community/projects/`](./community/projects/)
+社区开发者已基于 CTSAI-A100 共建多项工程项目，包括：
+
+- 室内低速目标检测与 MTI
+- MATLAB ADC 信号处理
+- 车辆周界感知与 LFMCW 仿真
+- 室内 / 室外雷达分析
+
+
+社区项目统一收录在：[`community/projects/`](./community/projects/)
 
 你可以在这里查看其他开发者基于 A100 完成的：
 
