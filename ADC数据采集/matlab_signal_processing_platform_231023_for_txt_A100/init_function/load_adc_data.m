@@ -4,40 +4,24 @@ function [adcData] = load_adc_data(file, Cfg)
 %------------------------------------------------------------------------------
 %   Author       : ZhuXinpeng
 %   Created      : 2021-05-13
-%   Description  : Load all adc data (Fixed Length Mismatch)
+%   Description  : Load legacy and session-style RadarTools ADC data
 %------------------------------------------------------------------------------
 
 nfiles = numel(file);
+target_dim = [Cfg.rng_nfft / 2, Cfg.nchirp];
+adcTemp2 = zeros(target_dim(2), target_dim(1), nfiles);
 
 for ifile = 1:nfiles
-    % 1. 读取数据并展平为列向量
-    adcTempCol = csvread(file{ifile});
-    adcTempCol = adcTempCol(:);
-    actual_len = length(adcTempCol);
-    
-    % 2. 关键修复：统一预期长度和reshape目标
-    target_dim = [Cfg.rng_nfft/2, Cfg.nchirp];
-    expected_len = prod(target_dim);  % 直接用reshape需要的长度g'fgf
-    
-    % 打印调试信息
+    [adcTempCol, metadata] = read_adc_capture_file(file{ifile}, Cfg);
+
     fprintf('通道 %d:\n', ifile);
-    fprintf('  实际数据长度: %d\n', actual_len);
-    fprintf('  reshape目标维度: %d × %d (需要元素数: %d)\n', ...
-        target_dim(1), target_dim(2), expected_len);
-    
-    % 3. 强制对齐到reshape需要的长度
-    if actual_len > expected_len
-        warning('通道 %d 数据过长，自动截断到 %d 个样本', ifile, expected_len);
-        adcTempCol = adcTempCol(1:expected_len);
-    elseif actual_len < expected_len
-        warning('通道 %d 数据过短，自动补零到 %d 个样本', ifile, expected_len);
-        adcTempCol = [adcTempCol; zeros(expected_len - actual_len, 1)];
+    fprintf('  ADC 样本数: %d\n', numel(adcTempCol));
+    if metadata.has_header
+        fprintf('  文件头: Rx%d, %d samples, %d chirps\n', ...
+            metadata.rx_channel, metadata.sample_count, metadata.chirp_count);
     end
-    
-    % 4. 现在元素数100%匹配，直接reshape
-    adcTemp(:, ifile) = adcTempCol;
-    adcTemp1(:, :, ifile) = reshape(adcTempCol, target_dim);
-    adcTemp2(:, :, ifile) = adcTemp1(:, :, ifile)';
+
+    adcTemp2(:, :, ifile) = reshape(adcTempCol, target_dim).';
 end
 
 if Cfg.nvirtual_chirp == 1
