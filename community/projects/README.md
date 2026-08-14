@@ -2,15 +2,14 @@
 
 这里收录开发者基于 **CTSAI-A100** 完成的社区项目、算法实验与应用案例。
 
-每个项目使用独立目录进行管理，例如：
+目前已正式收录以下 Community Projects：
 
 ```text
 community/projects/
-├── human-mti/
-├── 2dfft-demo/
-├── pointcloud-tracking/
-└── robot-perception/
-```
+├── a100-indoor-cart-mti/
+├── a100-matlab-adc-signal-processing/
+├── a100-perimeter-vehicle-radar-analysis/
+└── a100-indoor-outdoor-radar-analysis/
 
 ## 项目列表
 
