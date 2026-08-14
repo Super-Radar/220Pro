@@ -112,4 +112,6 @@ leave `velocity_mps` / `angle_deg` empty with `kinematics_valid=False`.
 - This example does not implement proprietary interference cancellation, phase
   calibration, velocity ambiguity resolution or product firmware logic.
 
-See `docs/CTSAI-A100_MATLAB_ADC_processing.md` for algorithm details.
+See `docs/CTSAI-A100_MATLAB_ADC_processing.md` for algorithm details and
+`docs/CTSAI-A100_MATLAB_ADC_technical_article_zh.md` for the Chinese technical
+practice article with committed validation figures.
