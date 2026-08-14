@@ -26,6 +26,14 @@ community/projects/
 
 随着项目被正式合并，我们会持续更新本页面。
 
+## 社区讨论
+
+除了 GitHub 工程代码与文档外，我们也在 SuperRadar 社区持续展示和讨论 Community Projects。
+
+👉 [CTSAI-A100 Community Projects｜开发者工程项目索引](https://www.superradar.cn/forum/2088186686992748544)
+
+欢迎在社区分享复现结果、开发经验、问题以及新的项目想法。
+
 ## 项目说明
 
 社区项目可能包括：
