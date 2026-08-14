@@ -7,5 +7,7 @@ finite=True
 detections=32
 mimo_mode=unresolved_ddma
 metadata_complete=False
+slow_time_mean_removal=False
+center_bin_suppression=False
 physical_velocity_valid=False
 angle_valid=False

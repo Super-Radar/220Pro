@@ -31,7 +31,7 @@ four RX text files + official HXX profile
   -> uint32/int16 unpacking and dimension validation
   -> per-chirp DC removal and range window
   -> Range FFT
-  -> slow-time mean removal and Doppler window
+  -> Doppler window (without slow-time mean removal)
   -> raw Doppler FFT and fftshift
   -> four-RX noncoherent power integration
   -> 2-D CA-CFAR and local-maximum suppression
@@ -49,13 +49,15 @@ FFT length. Only the positive half is retained for real ADC input.
 
 ## Doppler FFT and DDMA validity
 
-For every range bin, the slow-time samples are mean-subtracted, windowed and
-transformed. `fftshift` places the zero raw Doppler bin at the center. A nominal
-TDM velocity scale can be derived from wavelength, chirp period and coherent
-chirp count, but review feedback identified DDMA structure in the public capture
-that is not described by the public TDM-style `tx_groups`. The example therefore
-retains raw Doppler-bin indices and does not export the nominal TDM scale as
-measured velocity.
+For every range bin, the slow-time samples are windowed and transformed without
+mean subtraction. `fftshift` places the raw Fourier index origin at the center,
+but unresolved DDMA phase coding means this is not a known physical
+zero-velocity location for the combined TX spectrum. Consequently, the example
+does not suppress the center bin. A nominal TDM velocity scale can be derived
+from wavelength, chirp period and coherent chirp count, but review feedback
+identified DDMA structure in the public capture that is not described by the
+public TDM-style `tx_groups`. The example therefore retains raw Doppler-bin
+indices and does not export the nominal TDM scale as measured velocity.
 
 Correct DDMA separation and kinematic recovery require the following public
 metadata:
@@ -119,6 +121,10 @@ Results depend on capture scene, waveform configuration, MIMO coding, mounting,
 calibration and processing parameters. This reference does not claim physical
 velocity, azimuth, maximum detection range, accuracy, false-alarm performance or
 product firmware equivalence for the unresolved public DDMA capture.
+
+The committed diagnostic results were produced by the independent NumPy
+validator from the public captures. Native MATLAB execution and radar hardware
+testing are not claimed.
 
 ## Extensions supported by the design
 

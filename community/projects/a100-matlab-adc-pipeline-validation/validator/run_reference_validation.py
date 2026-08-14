@@ -146,7 +146,9 @@ def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
     adc = load_adc(files, cfg)
     range_fft = np.fft.fft(adc*np.hanning(adc.shape[0])[:, None, None],
                            cfg["nfft"], axis=0)[:cfg["nfft"]//2]
-    range_fft -= range_fft.mean(axis=1, keepdims=True)
+    # Unresolved DDMA coding can move a stationary TX response away from the
+    # center bin. Preserve the complete combined raw spectrum rather than
+    # applying slow-time mean or center-bin suppression.
     rd = np.fft.fftshift(np.fft.fft(
         range_fft*np.hanning(cfg["chirps"])[None, :, None],
         cfg["doppler_nfft"], axis=1), axes=1)
@@ -182,6 +184,7 @@ def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
                f"adc_shape={adc.shape}\nrd_shape={rd.shape}\n"
                f"finite={np.isfinite(power_db).all()}\ndetections={len(rows)}\n"
                "mimo_mode=unresolved_ddma\nmetadata_complete=False\n"
+               "slow_time_mean_removal=False\ncenter_bin_suppression=False\n"
                "physical_velocity_valid=False\nangle_valid=False\n")
     (output/"validation.txt").write_text(summary, encoding="utf-8")
     print(summary, end="")

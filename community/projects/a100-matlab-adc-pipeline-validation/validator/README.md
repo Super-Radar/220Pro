@@ -7,6 +7,9 @@ and CA-CFAR equations with NumPy.
 The validation deliberately does not turn unresolved DDMA bins into physical
 velocity or angle. Generated CSV files retain raw Doppler bins and leave
 `velocity_mps` and `angle_deg` empty with `kinematics_valid=False`.
+It also performs no slow-time mean subtraction or center-bin suppression,
+because unresolved DDMA coding means the combined spectrum center is not a
+known physical zero-velocity location.
 
 Run from the repository root:
 

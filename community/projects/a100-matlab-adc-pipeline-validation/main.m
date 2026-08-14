@@ -1,7 +1,7 @@
-function detections = run_ctsai_a100_demo(profileName)
-%RUN_CTSAI_A100_DEMO Reproducible ADC signal-processing entry point.
-%   run_ctsai_a100_demo() processes the near profile.
-%   run_ctsai_a100_demo('far') processes the far profile.
+function detections = main(profileName)
+%MAIN Reproducible ADC signal-processing entry point.
+%   main() processes the near profile.
+%   main('far') processes the far profile.
 
 if nargin < 1
     profileName = 'near';
@@ -58,6 +58,8 @@ fprintf(fid, 'source_config=%s\n', cfg.sourceConfigFile);
 fprintf(fid, 'tx_groups=%s\n', mat2str(cfg.txGroups));
 fprintf(fid, 'mimo_mode=%s\n', cfg.mimo.mode);
 fprintf(fid, 'metadata_complete=%d\n', cfg.mimo.metadataComplete);
+fprintf(fid, 'slow_time_mean_removal=0\n');
+fprintf(fid, 'center_bin_suppression=0\n');
 fprintf(fid, 'physical_velocity_valid=%d\n', cfg.mimo.velocityValid);
 fprintf(fid, 'angle_valid=%d\n', cfg.mimo.angleValid);
 fprintf(fid, 'missing_metadata:\n');

@@ -8,8 +8,9 @@ windowed = adc .* reshape(rangeWindow, [], 1, 1);
 rangeFftFull = fft(windowed, cfg.rangeNfft, 1);
 rangeFft = rangeFftFull(1:cfg.rangeNfft/2, :, :);
 
-% Slow-time mean removal suppresses the static/zero-Doppler component.
-rangeFft = rangeFft - mean(rangeFft, 2);
+% Do not remove the slow-time mean while DDMA coding is unresolved. DDMA
+% modulation shifts each TX response, so the physical zero-velocity response
+% cannot be assumed to occupy the center bin of the combined raw spectrum.
 dopplerInput = rangeFft .* reshape(dopplerWindow, 1, [], 1);
 rdCube = fftshift(fft(dopplerInput, cfg.dopplerNfft, 2), 2);
 
