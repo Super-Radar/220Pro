@@ -16,8 +16,6 @@ community/projects/
 当前社区项目将陆续收录至此。
 
 
-然后项目表格改成：
-
 | 项目 | 方向 | 数据类型 | 开发环境 | 作者 |
 |---|---|---|---|---|
 | [室内低速目标检测与 MTI](a100-indoor-cart-mti/) | 室内低速目标检测、LFMCW、2D-FFT 与 MTI | ADC、CAN、RawTarget、TraTarget | GNU Octave 11.3.0 | [@yyqdbngt](https://github.com/yyqdbngt) |
