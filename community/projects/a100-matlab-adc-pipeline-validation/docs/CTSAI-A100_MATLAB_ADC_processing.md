@@ -78,7 +78,10 @@ The detector estimates local noise from a rectangular ring of training cells.
 Guard cells reduce target-energy leakage. The threshold multiplier is derived
 from the configured false-alarm probability. A 3-by-3 local-maximum test prevents
 one response from producing a cluster of adjacent output rows. For the current
-capture this is explicitly a raw-spectrum diagnostic.
+capture this is explicitly a raw-spectrum diagnostic. The Doppler dimension is
+wrapped because FFT bins at the two displayed edges are adjacent. The configured
+range-of-interest mask is applied after noise estimation so excluded range bins
+do not lower the threshold near an ROI boundary.
 
 ## Angle FFT
 

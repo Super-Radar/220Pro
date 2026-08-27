@@ -22,8 +22,6 @@ dopplerBins = (-cfg.dopplerNfft/2:cfg.dopplerNfft/2-1);
 nominalTdmVelocityAxis = dopplerBins * cfg.nominalTdmVelocityResolutionMps;
 
 valid = rangeAxis >= cfg.cfar.minRangeM & rangeAxis <= cfg.cfar.maxRangeM;
-rdPower(~valid,:) = 0;
-rdPowerDb(~valid,:) = min(rdPowerDb(:));
 
 out.adc = adc;
 out.rangeFft = rangeFft;
@@ -33,6 +31,7 @@ out.rdPowerDb = rdPowerDb;
 out.rangeAxis = rangeAxis;
 out.dopplerBinAxis = dopplerBins;
 out.nominalTdmVelocityAxis = nominalTdmVelocityAxis;
+out.validRangeMask = valid;
 end
 
 function w = local_hann(n)

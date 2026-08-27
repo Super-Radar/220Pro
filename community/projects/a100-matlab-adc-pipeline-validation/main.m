@@ -29,6 +29,9 @@ out = process_radar_cube(adc, cfg);
 
 fprintf('Running 2-D CA-CFAR...\n');
 [cfarMask, thresholdDb] = ca_cfar_2d(out.rdPower, cfg.cfar);
+% Apply the configured range ROI after estimating CFAR noise. Zeroing the
+% excluded bins before CFAR would bias thresholds at both ROI boundaries.
+cfarMask(~out.validRangeMask,:) = false;
 detections = build_detection_table(cfarMask, out.rdPowerDb, ...
     out.rangeAxis, out.dopplerBinAxis, out.nominalTdmVelocityAxis, ...
     out.rdCube, cfg, maxDetections);

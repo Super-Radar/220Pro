@@ -11,6 +11,10 @@ It also performs no slow-time mean subtraction or center-bin suppression,
 because unresolved DDMA coding means the combined spectrum center is not a
 known physical zero-velocity location.
 
+The validator includes a regression check for a target on the periodic Doppler
+boundary. Range-of-interest filtering is applied only after the CFAR noise map
+has been estimated.
+
 Run from the repository root:
 
 ```powershell
@@ -19,9 +23,9 @@ python "community/projects/a100-matlab-adc-pipeline-validation/validator/run_ref
 
 Validated environment for the committed results:
 
-- Python 3.12.13
-- NumPy 2.3.5
-- Pillow 12.2.0
+- Python 3.10.12
+- NumPy 2.2.6
+- Pillow 12.3.0
 
 Expected cube dimensions:
 

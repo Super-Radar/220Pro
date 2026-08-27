@@ -71,7 +71,10 @@ def cfar(power: np.ndarray, training=(8, 6), guard=(2, 2), pfa=1e-4) -> np.ndarr
     kernel = np.ones((2*(tr+gr)+1, 2*(td+gd)+1))
     kernel[tr:tr+2*gr+1, td:td+2*gd+1] = 0
     count = kernel.sum()
-    padded = np.pad(power, ((tr+gr, tr+gr), (td+gd, td+gd)), mode="constant")
+    # Range is bounded, while the Doppler FFT axis is periodic. Padding the
+    # dimensions separately preserves that topology at +/-N/2.
+    padded = np.pad(power, ((tr+gr, tr+gr), (0, 0)), mode="constant")
+    padded = np.pad(padded, ((0, 0), (td+gd, td+gd)), mode="wrap")
     noise = np.zeros_like(power)
     for r, d in np.argwhere(kernel):
         noise += padded[r:r+power.shape[0], d:d+power.shape[1]]
@@ -86,8 +89,16 @@ def cfar(power: np.ndarray, training=(8, 6), guard=(2, 2), pfa=1e-4) -> np.ndarr
     mask &= local
     border_r, border_d = tr + gr, td + gd
     mask[:border_r] = mask[-border_r:] = False
-    mask[:, :border_d] = mask[:, -border_d:] = False
     return mask
+
+
+def validate_cfar_topology() -> None:
+    """Regression-check detection at the periodic Doppler boundary."""
+    probe = np.ones((64, 64), dtype=np.float64)
+    probe[32, 0] = 1_000.0
+    mask = cfar(probe, training=(4, 4), guard=(1, 1), pfa=1e-3)
+    if not mask[32, 0]:
+        raise AssertionError("CFAR lost a target at the wrapped Doppler boundary")
 
 
 def heatmap_image(values: np.ndarray, title: str, cells=None) -> Image.Image:
@@ -158,15 +169,17 @@ def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
     range_bin = C*cfg["sample_rate"]/(2*slope*cfg["nfft"])
     ranges = np.arange(power.shape[0])*range_bin
     doppler_bins = np.arange(cfg["doppler_nfft"])-cfg["doppler_nfft"]//2
-    power[(ranges < 0.5) | (ranges > 0.9*ranges[-1])] = 0
     mask = cfar(power)
+    # Filter the range ROI after CFAR so excluded bins cannot depress the
+    # training-cell average at the ROI boundaries.
+    mask[(ranges < 0.5) | (ranges > 0.9*ranges[-1])] = False
     cells = sorted(np.argwhere(mask), key=lambda x: power_db[tuple(x)], reverse=True)[:32]
 
     output.mkdir(parents=True, exist_ok=True)
     rows = [(ranges[r], int(doppler_bins[d]), "", "", power_db[r, d], False,
              "raw_ddma_not_decoded") for r, d in cells]
     with (output/"detections.csv").open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
+        writer = csv.writer(f, lineterminator="\n")
         writer.writerow(("range_m", "doppler_bin", "velocity_mps", "angle_deg",
                          "power_db", "kinematics_valid", "processing_status"))
         writer.writerows(rows)
@@ -184,6 +197,7 @@ def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
                f"adc_shape={adc.shape}\nrd_shape={rd.shape}\n"
                f"finite={np.isfinite(power_db).all()}\ndetections={len(rows)}\n"
                "mimo_mode=unresolved_ddma\nmetadata_complete=False\n"
+               "doppler_cfar_wrap=True\nrange_roi_after_cfar=True\n"
                "slow_time_mean_removal=False\ncenter_bin_suppression=False\n"
                "physical_velocity_valid=False\nangle_valid=False\n")
     (output/"validation.txt").write_text(summary, encoding="utf-8")
@@ -191,6 +205,7 @@ def save_results(name: str, cfg: dict, files: list[Path], output: Path) -> None:
 
 
 def main() -> None:
+    validate_cfar_topology()
     validation_dir = Path(__file__).resolve().parent
     repo = validation_dir.parents[3]
     data_dir = repo/"ADC数据采集"/"示例adc数据和结果"
