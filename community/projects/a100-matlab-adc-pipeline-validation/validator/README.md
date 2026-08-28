@@ -33,3 +33,11 @@ Expected cube dimensions:
 |---|---|---:|---:|
 | near | `sensor_config_init1.hxx` | 2048 x 128 x 4 | 1024 x 128 x 4 |
 | far | `sensor_config_init0.hxx` | 1024 x 256 x 4 | 512 x 256 x 4 |
+
+## Native MATLAB cross-validation
+
+MATLAB R2026a completed `main('near')` and `main('far')` on a GitHub-hosted
+Ubuntu runner. The resulting detection rows were compared against these NumPy
+reference CSV files: raw Doppler bins matched exactly, while maximum range and
+power differences were below `5e-14 m` and `5e-13 dB`. Run metadata and the
+public workflow URL are recorded in `results/matlab-r2026a-validation.txt`.

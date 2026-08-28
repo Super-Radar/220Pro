@@ -125,9 +125,13 @@ calibration and processing parameters. This reference does not claim physical
 velocity, azimuth, maximum detection range, accuracy, false-alarm performance or
 product firmware equivalence for the unresolved public DDMA capture.
 
-The committed diagnostic results were produced by the independent NumPy
-validator from the public captures. Native MATLAB execution and radar hardware
-testing are not claimed.
+The committed reference results were produced by the independent NumPy validator
+from the public captures. Native MATLAB R2026a cross-validation subsequently ran
+`main('near')` and `main('far')` successfully on GitHub-hosted Ubuntu. Detection
+counts and raw Doppler bins matched, with range/power differences below numerical
+roundoff. The run is recorded in
+`validator/results/matlab-r2026a-validation.txt`. Radar hardware testing is not
+claimed.
 
 ## Extensions supported by the design
 
@@ -141,4 +145,5 @@ once the required public metadata is available.
 `community/projects/a100-matlab-adc-pipeline-validation/validator/` contains a
 NumPy implementation of the same HXX loading, ADC unpacking and diagnostic
 FFT/CFAR equations. It checks data shapes, configuration consistency and finite
-output without claiming native MATLAB execution.
+output independently; the native MATLAB cross-validation described above then
+compares its exported detections against this reference.
