@@ -18,8 +18,10 @@ sectorMeans = zeros([size(powerMap), numSectors]);
 sectorVariability = zeros([size(powerMap), numSectors]);
 sectorSums = zeros([size(powerMap), numSectors]);
 for iSector = 1:numSectors
-    localSum = conv2(powerMap, sectorKernels(:,:,iSector), 'same');
-    localSumSq = conv2(powerMap.^2, sectorKernels(:,:,iSector), 'same');
+    localSum = conv2_doppler_periodic(powerMap, ...
+        sectorKernels(:,:,iSector));
+    localSumSq = conv2_doppler_periodic(powerMap.^2, ...
+        sectorKernels(:,:,iSector));
     localMean = localSum / sectorCounts(iSector);
     localVar = max(localSumSq / sectorCounts(iSector) - localMean.^2, 0);
     sectorSums(:,:,iSector) = localSum;
@@ -27,8 +29,8 @@ for iSector = 1:numSectors
     sectorVariability(:,:,iSector) = localVar ./ (localMean.^2 + eps);
 end
 
-fullSum = conv2(powerMap, fullKernel, 'same');
-fullSumSq = conv2(powerMap.^2, fullKernel, 'same');
+fullSum = conv2_doppler_periodic(powerMap, fullKernel);
+fullSumSq = conv2_doppler_periodic(powerMap.^2, fullKernel);
 fullMean = fullSum / numTraining;
 fullVar = max(fullSumSq / numTraining - fullMean.^2, 0);
 variabilityIndex = fullVar ./ (fullMean.^2 + eps);

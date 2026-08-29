@@ -7,8 +7,8 @@ function [mask, noiseMap, thresholdMap, alphaMap, numTrainingMap, ...
 numSectors = size(sectorKernels,3);
 sectorMeans = zeros([size(powerMap), numSectors]);
 for iSector = 1:numSectors
-    sectorMeans(:,:,iSector) = conv2(powerMap, ...
-        sectorKernels(:,:,iSector), 'same') / sectorCounts(iSector);
+    sectorMeans(:,:,iSector) = conv2_doppler_periodic(powerMap, ...
+        sectorKernels(:,:,iSector)) / sectorCounts(iSector);
 end
 
 switch upper(mode)
