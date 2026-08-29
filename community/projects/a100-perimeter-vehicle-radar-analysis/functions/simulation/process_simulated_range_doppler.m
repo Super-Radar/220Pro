@@ -7,7 +7,7 @@ Nc = size(beat, 2);
 
 %% Fast-time window
 
-rangeWindow = hann(Ns);
+rangeWindow = make_window('hann', Ns);
 
 beatWindowed = ...
     beat .* repmat(rangeWindow, 1, Nc);
@@ -26,7 +26,7 @@ rangeFFT = ...
 
 %% Slow-time window
 
-dopplerWindow = hann(Nc).';
+dopplerWindow = make_window('hann', Nc).';
 
 rangeFFTWindowed = ...
     rangeFFT .* ...
@@ -58,9 +58,13 @@ rangeAxis = ...
 
 %% Physical velocity axis
 
+% fftshift 后的奇数长度频谱零频位于正中；直接使用 -Nc/2 会产生
+% 半个 bin 的偏移。
+dopplerBins = ...
+    -floor(Nc/2) : ceil(Nc/2)-1;
+
 dopplerFrequencyAxis = ...
-    (-Nc/2 : Nc/2-1) / ...
-    (Nc * cfg.chirp_period);
+    dopplerBins / (Nc * cfg.chirp_period);
 
 velocityAxis = ...
     dopplerFrequencyAxis * ...

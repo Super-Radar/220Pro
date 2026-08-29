@@ -668,7 +668,7 @@ function power = doppler_power_from_range_cube(rangeCube)
 numRangeBins = size(rangeCube, 1);
 numChirps = size(rangeCube, 2);
 
-window = hann(numChirps).';
+window = make_window('hann', numChirps).';
 
 rangeCube = ...
     rangeCube .* ...
