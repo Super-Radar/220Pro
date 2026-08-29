@@ -5,8 +5,9 @@ function main()
 %
 % The program runs:
 %   1. measured ADC analysis
-%   2. LFMCW comprehensive simulation
-%   3. LFMCW parameter studies
+%   2. measured run summary
+%   3. LFMCW comprehensive simulation
+%   4. LFMCW parameter studies
 
 fprintf('\n');
 fprintf('=========================================================\n');
@@ -30,10 +31,25 @@ run(fullfile( ...
 
 projectRoot = fileparts(mfilename('fullpath'));
 
-%% Part 2 - LFMCW simulation
+%% Part 2 - Measured run summary
 
 fprintf('\n');
-fprintf('PART 2 - MATLAB LFMCW simulation\n');
+fprintf('PART 2 - Measured discrete-run summary\n');
+fprintf('=========================================================\n');
+
+run(fullfile( ...
+    projectRoot, ...
+    'tests', ...
+    'run_measured_run_summary.m'));
+
+%% Rebuild path because the summary script contains clear
+
+projectRoot = fileparts(mfilename('fullpath'));
+
+%% Part 3 - LFMCW simulation
+
+fprintf('\n');
+fprintf('PART 3 - MATLAB LFMCW simulation\n');
 fprintf('=========================================================\n');
 
 run(fullfile( ...
@@ -43,10 +59,10 @@ run(fullfile( ...
 
 projectRoot = fileparts(mfilename('fullpath'));
 
-%% Part 3 - Parameter studies
+%% Part 4 - Parameter studies
 
 fprintf('\n');
-fprintf('PART 3 - Radar parameter studies\n');
+fprintf('PART 4 - Radar parameter studies\n');
 fprintf('=========================================================\n');
 
 run(fullfile( ...
