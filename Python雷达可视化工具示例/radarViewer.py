@@ -12,10 +12,12 @@ from collections import deque, defaultdict
 # 第三方库依赖处理
 try:
     from sklearn.cluster import DBSCAN
+except ImportError:
+    DBSCAN = None
+
+try:
     from scipy.optimize import linear_sum_assignment
 except ImportError:
-    messagebox.showwarning("依赖缺失", "请安装依赖：pip install scikit-learn scipy")
-    DBSCAN = None
     linear_sum_assignment = None
 
 plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -39,7 +41,8 @@ class RadarParser:
                 self.header_line = line.split(',')
                 break
         if self.header_line is None:
-            raise ValueError("未找到有效数据表头，文件格式不支持")
+            self._load_tabular_file()
+            return
 
         current_frame = None
         current_timestamp = None
@@ -78,17 +81,27 @@ class RadarParser:
                     }
 
         if not self.frame_index:
-            df = pd.read_csv(self.file_path, on_bad_lines='skip')
-            if 'FrameNb' not in df.columns:
-                df['FrameNb'] = 0
-            if 'Timestamp' not in df.columns:
-                df['Timestamp'] = datetime.now()
-            for fnb in df['FrameNb'].unique():
-                self.frame_index[fnb] = {
-                    'ts': df[df['FrameNb']==fnb]['Timestamp'].iloc[0],
-                    'count': len(df[df['FrameNb']==fnb])
-                }
-            self.df_all = df
+            self._load_tabular_file()
+
+    def _load_tabular_file(self):
+        """加载没有 START/END 元数据行的普通矩形 CSV。"""
+        df = pd.read_csv(self.file_path, on_bad_lines='skip')
+        required_columns = {'ObjId', 'range'}
+        missing_columns = required_columns.difference(df.columns)
+        if missing_columns:
+            missing = ', '.join(sorted(missing_columns))
+            raise ValueError(f"缺少必要数据列：{missing}")
+        if 'FrameNb' not in df.columns:
+            df['FrameNb'] = 0
+        if 'Timestamp' not in df.columns:
+            df['Timestamp'] = datetime.now()
+        for fnb in df['FrameNb'].unique():
+            frame = df[df['FrameNb'] == fnb]
+            self.frame_index[fnb] = {
+                'ts': frame['Timestamp'].iloc[0],
+                'count': len(frame)
+            }
+        self.df_all = df
 
     def get_frame(self, fnb):
         if fnb not in self.frame_index:
@@ -114,11 +127,15 @@ class RadarParser:
             df['FrameNb'] = fnb
             df['Timestamp'] = info['ts']
 
-        numeric_cols = ['ObjId', 'range', 'speed', 'angle', 'RCS', 'snr', 'X', 'Y']
+        # 身份转换失败的行必须先移除，不能和普通数值缺失值一样填成 0。
+        if 'ObjId' in df.columns:
+            df['ObjId'] = pd.to_numeric(df['ObjId'], errors='coerce')
+            df = df.dropna(subset=['ObjId']).reset_index(drop=True)
+
+        numeric_cols = ['range', 'speed', 'angle', 'RCS', 'snr', 'X', 'Y']
         for col in numeric_cols:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
-        df = df.dropna(subset=['ObjId']).reset_index(drop=True)
         df = df[df['range'] >= 0].reset_index(drop=True)
 
         if 'angle' in df.columns and 'range' in df.columns:
@@ -171,7 +188,7 @@ class RadarFilter:
 # ---------------------- 3. 卡尔曼目标跟踪器 ----------------------
 class KalmanTracker:
     def __init__(self):
-        self.enable_tracking = BooleanVar(value=True)
+        self.enable_tracking = BooleanVar(value=linear_sum_assignment is not None)
         self.match_thresh = DoubleVar(value=5.0)  # 匹配距离阈值
         self.max_lost_frames = IntVar(value=3)    # 最大丢失帧数
         self.next_id = 0
@@ -208,7 +225,7 @@ class KalmanTracker:
         return track
 
     def track(self, df):
-        if not self.enable_tracking.get() or df.empty:
+        if not self.enable_tracking.get() or df.empty or linear_sum_assignment is None:
             df['track_id'] = df['ObjId'] if 'ObjId' in df.columns else range(len(df))
             return df
         
@@ -282,7 +299,7 @@ class RadarCluster:
         self.enable_clustering = BooleanVar(value=False)
         self.eps = DoubleVar(value=2.0)  # 聚类半径
         self.min_samples = IntVar(value=2)  # 最小样本数
-        self.cluster_colors = plt.cm.get_cmap('tab10', 20)  # 聚类颜色映射
+        self.cluster_colors = plt.get_cmap('tab10', 20)  # 聚类颜色映射
 
     def cluster(self, df):
         if not self.enable_clustering.get() or df.empty or DBSCAN is None:
@@ -314,9 +331,15 @@ class RadarCluster:
 
         # 给数据添加聚类信息
         df['cluster_id'] = labels
-        df['cluster_center_x'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('center_x', df['X']))
-        df['cluster_center_y'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('center_y', df['Y']))
-        df['cluster_size'] = df['cluster_id'].map(lambda x: cluster_info.get(x, {}).get('size', 1))
+        # 噪点没有聚类中心，回退到该行自身坐标，确保每个单元格都是标量。
+        df['cluster_center_x'] = df['X']
+        df['cluster_center_y'] = df['Y']
+        df['cluster_size'] = 1
+        for label, info in cluster_info.items():
+            cluster_mask = df['cluster_id'] == label
+            df.loc[cluster_mask, 'cluster_center_x'] = info['center_x']
+            df.loc[cluster_mask, 'cluster_center_y'] = info['center_y']
+            df.loc[cluster_mask, 'cluster_size'] = info['size']
 
         return df
 
@@ -600,6 +623,10 @@ class RadarPlayer(tk.Tk):
         self.update_frame()
 
     def _setup_track_tab(self, parent):
+        if linear_sum_assignment is None:
+            ttk.Label(parent, text="请安装依赖：pip install scipy", foreground="red").pack(pady=10)
+            return
+
         ttk.Checkbutton(parent, text="启用卡尔曼跟踪", variable=self.tracker.enable_tracking).pack(anchor=tk.W, pady=(0, 8))
         
         param_frame = ttk.LabelFrame(parent, text="跟踪参数", padding=8)
@@ -807,13 +834,19 @@ class RadarPlayer(tk.Tk):
     def toggle(self):
         if not self.fns:
             return
-        self.playing = not self.playing
         if self.playing:
-            self.loop()
+            self.playing = False
+            if self.timer is not None:
+                self.after_cancel(self.timer)
+                self.timer = None
+            return
+        self.playing = True
+        self.loop()
 
     def loop(self):
         if not self.playing or not self.fns:
             return
+        self.timer = None
         idx = self.fns.index(self.current)
         if idx + 1 >= len(self.fns):
             self.playing = False
