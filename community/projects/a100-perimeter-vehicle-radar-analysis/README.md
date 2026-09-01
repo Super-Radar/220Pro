@@ -78,6 +78,8 @@
 
 * MATLAB：R2024b
 
+* 附加工具箱：无；窗口和时频图均由项目内的基础 MATLAB FFT 实现
+
 * 数据类型：CTSAI-A100 ADC TXT
 
 * Profile：Pf0

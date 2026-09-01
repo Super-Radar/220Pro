@@ -50,12 +50,12 @@ end
 
 mimo = decode_tx_groups(cfg, 4);
 
-% The current Issue #13 baseline directly Doppler-processes all 256
-% chirps of one RX file. This is valid for the current SISO profile.
-if mimo.group_count ~= 1
-    error(['This measured-data baseline currently expects one TX chirp ' ...
-           'group, but the configuration contains %d groups.'], ...
-        mimo.group_count);
+% 当前速度轴没有实现同时发射信号的分离，单个 chirp group 并不等同
+% 于 SISO，例如两个 TX 同组发射也只有一个 group。
+if ~strcmp(mimo.mode, 'SISO')
+    error('derive_measured_axes:UnsupportedTxMode', ...
+        ['This measured-data baseline requires SISO, but the decoded ' ...
+         'TX mode is %s.'], mimo.mode);
 end
 
 %% Physical constants

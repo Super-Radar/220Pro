@@ -84,6 +84,8 @@
 
 * MATLAB：2024b
 
+* 附加工具箱：无；窗口和时频图均由项目内的基础 MATLAB FFT 实现
+
 * Data：ADC TXT
 
 * Profile：Pf0
@@ -1227,6 +1229,5 @@ MATLAB 仿真用于研究理想化 LFMCW 雷达规律。
 
 
 `community/projects/a100-indoor-outdoor-radar-analysis/`
-
 
 
