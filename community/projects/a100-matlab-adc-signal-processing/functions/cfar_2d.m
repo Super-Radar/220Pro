@@ -5,14 +5,13 @@ trainD = cfarOpts.training_cells(2);
 guardR = cfarOpts.guard_cells(1);
 guardD = cfarOpts.guard_cells(2);
 halfR = trainR + guardR;
-halfD = trainD + guardD;
 algorithm = upper(strtrim(cfarOpts.algorithm));
 
 switch algorithm
     case 'CA'
         [kernel, ~, ~] = build_cfar_kernels(trainR, trainD, guardR, guardD);
         numTraining = sum(kernel(:));
-        noiseMap = conv2(powerMap, kernel, 'same') / numTraining;
+        noiseMap = conv2_doppler_periodic(powerMap, kernel) / numTraining;
         alpha = cfar_alpha_ca(numTraining, cfarOpts.pfa);
         thresholdMap = alpha * noiseMap;
         mask = powerMap > thresholdMap;
@@ -69,8 +68,9 @@ switch algorithm
         error('Unsupported CFAR algorithm: %s', cfarOpts.algorithm);
 end
 
+% Doppler FFT 栅格是周期域；仅 Range 边界缺少完整训练窗。
 valid = false(size(powerMap));
-valid(halfR+1:end-halfR, halfD+1:end-halfD) = true;
+valid(halfR+1:end-halfR, :) = true;
 mask = mask & valid;
 methodMap(~valid) = 0;
 
@@ -83,7 +83,7 @@ result.snr_db = 10 * log10((powerMap + eps) ./ (noiseMap + eps));
 result.alpha = alpha;
 result.alpha_map = alphaMap;
 result.num_training_cells = numTrainingMap;
-result.edge_margin = [halfR, halfD];
+result.edge_margin = [halfR, 0];
 result.method_map = methodMap;
 result.method_names = methodNames;
 result.variability_index = variabilityIndex;
@@ -91,8 +91,8 @@ result.sector_mean_ratio = sectorMeanRatio;
 end
 
 function variabilityIndex = local_variability_index(powerMap, kernel, numTraining)
-localSum = conv2(powerMap, kernel, 'same');
-localSumSq = conv2(powerMap.^2, kernel, 'same');
+localSum = conv2_doppler_periodic(powerMap, kernel);
+localSumSq = conv2_doppler_periodic(powerMap.^2, kernel);
 localMean = localSum / numTraining;
 localVariance = max(localSumSq / numTraining - localMean.^2, 0);
 variabilityIndex = localVariance ./ (localMean.^2 + eps);

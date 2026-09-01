@@ -22,12 +22,16 @@ noiseMap = nan(size(powerMap));
 thresholdMap = nan(size(powerMap));
 mask = false(size(powerMap));
 
+numDoppler = size(powerMap,2);
 for iRange = halfR+1:size(powerMap,1)-halfR
-    for iDoppler = halfD+1:size(powerMap,2)-halfD
+    for iDoppler = 1:numDoppler
         training = zeros(numTraining, 1);
         for iCell = 1:numTraining
+            % Doppler 训练单元跨越 FFT 端点时按周期索引取样。
+            trainingDoppler = mod(iDoppler + offsets(iCell,2) - 1, ...
+                numDoppler) + 1;
             training(iCell) = powerMap(iRange + offsets(iCell,1), ...
-                iDoppler + offsets(iCell,2));
+                trainingDoppler);
         end
         training = sort(training, 'ascend');
         noiseValue = training(rankIndex);

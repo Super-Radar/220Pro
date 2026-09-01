@@ -38,7 +38,8 @@ for iDetection = 1:height(detections)
     rHalf = angleOpts.music_snapshot_half_window(1);
     dHalf = angleOpts.music_snapshot_half_window(2);
     rIdx = max(1,r-rHalf):min(size(rdCube,1),r+rHalf);
-    dIdx = max(1,d-dHalf):min(size(rdCube,2),d+dHalf);
+    % MUSIC 快拍的 Doppler 邻域采用周期索引，Range 邻域保持截断。
+    dIdx = mod((d-dHalf:d+dHalf)-1, size(rdCube,2)) + 1;
     localData = permute(rdCube(rIdx,dIdx,:), [3,1,2]);
     localSnapshots = reshape(localData, numChannels, []);
     localSnapshots = calibrate_angle_snapshots(localSnapshots, ...

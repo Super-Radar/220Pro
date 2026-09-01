@@ -18,7 +18,8 @@ peakHalfD = detOpts.local_peak_half_window(2);
 for i = 1:numel(rowList)
     r = rowList(i); d = colList(i);
     rIdx = max(1,r-peakHalfR):min(size(powerMap,1),r+peakHalfR);
-    dIdx = max(1,d-peakHalfD):min(size(powerMap,2),d+peakHalfD);
+    % Doppler 首尾相邻，局部峰值窗口必须跨 FFT 端点比较。
+    dIdx = mod((d-peakHalfD:d+peakHalfD)-1, size(powerMap,2)) + 1;
     patch = powerMap(rIdx, dIdx);
     keep(i) = powerMap(r,d) >= max(patch(:));
 end
