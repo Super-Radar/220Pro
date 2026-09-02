@@ -123,13 +123,13 @@ DBF_multi_obj_TH=1;%residual_power/signal_power
 
 
 %case3: DML engine
-DML_sin_anlgle_reso=(sind(Cfg.bfm_az_right)-sind(Cfg.bfm_az_left))/Cfg.doa_npoint(1);
-DML_sin_anlgle=sind(Cfg.bfm_az_left)+[Cfg.dml_2dsch_start(1):Cfg.dml_2dsch_end(1)]*DML_sin_anlgle_reso;
-DML_angle = asind(DML_sin_anlgle) ;%asin(-0.95:0.0025:0.95) * 180 / pi
+DML_sin_angle_reso=(sind(Cfg.bfm_az_right)-sind(Cfg.bfm_az_left))/Cfg.doa_npoint(1);
+DML_sin_angle=sind(Cfg.bfm_az_left)+[Cfg.dml_2dsch_start(1):Cfg.dml_2dsch_end(1)]*DML_sin_angle_reso;
+DML_angle = asind(DML_sin_angle) ;%asin(-0.95:0.0025:0.95) * 180 / pi
 num_DML_angle=length(DML_angle);
-DML_down_samping=Cfg.dml_2dsch_step(1);%
-DML_refine_num=ceil(DML_down_samping/2);
-DML_down_samping_num=fix((num_DML_angle-1)/DML_down_samping)+1;
+DML_down_sampling=Cfg.dml_2dsch_step(1);%
+DML_refine_num=ceil(DML_down_sampling/2);
+DML_down_sampling_num=fix((num_DML_angle-1)/DML_down_sampling)+1;
 DML_steer_vector=exp(1i*2*pi*Cfg.antena_position(1,:).'*sind(DML_angle));%DML导向矢量
 DML_steer_vector=DML_steer_vector.*repmat(conj(phase_cmp),1,num_DML_angle);%DML的补偿为负共轭相乘
 
@@ -163,9 +163,9 @@ DOA_par.DBF_win=DBF_win;
 DOA_par.DBF_multi_obj_TH=DBF_multi_obj_TH;
 
 DOA_par.DML_angle=DML_angle;
-DOA_par.DML_down_samping=DML_down_samping;
+DOA_par.DML_down_sampling=DML_down_sampling;
 DOA_par.DML_refine_num=DML_refine_num;
-DOA_par.DML_down_samping_num=DML_down_samping_num;
+DOA_par.DML_down_sampling_num=DML_down_sampling_num;
 DOA_par.DML_steer_vector=DML_steer_vector;
 DOA_par.num_DML_angle=num_DML_angle;
 DOA_par.DML_d_value=DML_d_value;

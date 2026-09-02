@@ -13,7 +13,7 @@
 
 CTSAI-A100 是 SuperRadar 社区面向科研单位、算法团队与技术开发者开放的毫米波感知硬件。它支持点云数据输出与 ADC 数据采集，适用于毫米波雷达信号处理、点云算法开发、目标检测、轨迹分析、多传感器融合、机器人感知、低空感知与交通场景数据采集等研究方向。
 
- <img src="docs/CTSAI-A100-bananer.png" alt="banner" height=600></img>
+ <img src="docs/CTSAI-A100-banner.png" alt="banner" height=600></img>
 
 本仓库提供 CTSAI-A100 的上位机工具、驱动程序、ADC 数据采集说明、Python 可视化示例、Matlab ADC 分析示例、示例数据与基础文档，帮助用户快速完成从硬件连接到数据采集和算法验证的完整流程。
 

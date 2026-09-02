@@ -579,7 +579,7 @@ public:
         lEdit_AgcSW->setPlaceholderText(QString());
         label_15->setText(QCoreApplication::translate("DialogExtendInfo", "MCU\346\270\251\345\272\246\357\274\232", nullptr));
         label_18->setText(QCoreApplication::translate("DialogExtendInfo", "AGC SW:", nullptr));
-        label_19->setText(QCoreApplication::translate("DialogExtendInfo", "AGC TPYE:", nullptr));
+        label_19->setText(QCoreApplication::translate("DialogExtendInfo", "AGC TYPE:", nullptr));
         label_26->setText(QCoreApplication::translate("DialogExtendInfo", "\345\256\211\350\243\205\344\277\257\344\273\260\350\247\222Y\357\274\232", nullptr));
         label_27->setText(QCoreApplication::translate("DialogExtendInfo", "\345\256\211\350\243\205\344\277\257\344\273\260\350\247\222X\357\274\232", nullptr));
         label_21->setText(QCoreApplication::translate("DialogExtendInfo", "\351\200\237\345\272\246\346\250\241\345\274\217:", nullptr));

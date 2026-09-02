@@ -3,7 +3,7 @@ function ADC = adc_mem_2_real_fixed (ADC_mem)
   % Convert 32bit ADC data read from memory to 2 consecutive real valued fixed 16bit point data. 
   % 32bit memory data : earlier 16bit signed sample data + later 16bit signed sample data.
   
-  [chirp_num, sample_num_div_2, channel_num] = size(ADC_mem); % Get size of 2 dimentional data matrix
+  [chirp_num, sample_num_div_2, channel_num] = size(ADC_mem); % Get size of 2 dimensional data matrix
   sample_num = sample_num_div_2*2;
   ADC = zeros(chirp_num, sample_num, channel_num);
   
